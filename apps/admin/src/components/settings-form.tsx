@@ -3,6 +3,12 @@
 import { useState } from "react";
 import { Loader2, AlertCircle, Check } from "lucide-react";
 import { updateSettings } from "@/app/(dashboard)/settings/actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 interface SocialLinks {
   github?: string;
@@ -42,76 +48,93 @@ export function SettingsForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
       {error && (
-        <div className="flex items-start gap-2 rounded-lg border border-red-500/20 bg-red-500/5 px-3 py-2.5 text-sm text-red-400">
+        <div className="flex items-start gap-2 rounded-lg border border-brand-error/20 bg-brand-error/5 px-3 py-2.5 text-sm text-brand-error">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           {error}
         </div>
       )}
 
       {success && (
-        <div className="flex items-center gap-2 rounded-lg border border-green-500/20 bg-green-500/5 px-3 py-2.5 text-sm text-green-400">
+        <div className="flex items-center gap-2 rounded-lg border border-brand-success/20 bg-brand-success/5 px-3 py-2.5 text-sm text-brand-success">
           <Check className="h-4 w-4" />
           Settings saved.
         </div>
       )}
 
-      <Section title="SEO">
-        <Field label="SEO Title">
-          <input name="seo_title" defaultValue={(content.seo_title as string) ?? ""} className="input-field" />
-        </Field>
-        <Field label="SEO Description">
-          <textarea name="seo_description" rows={2} defaultValue={(content.seo_description as string) ?? ""} className="input-field" />
-        </Field>
-      </Section>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm">SEO</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="seo_title">SEO Title</Label>
+            <Input id="seo_title" name="seo_title" defaultValue={(content.seo_title as string) ?? ""} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="seo_description">SEO Description</Label>
+            <Textarea id="seo_description" name="seo_description" rows={2} defaultValue={(content.seo_description as string) ?? ""} />
+          </div>
+        </CardContent>
+      </Card>
 
-      <Section title="Community">
-        <Field label="Community Introduction">
-          <textarea name="community_intro" rows={4} defaultValue={(content.community_intro as string) ?? ""} className="input-field" />
-        </Field>
-        <Field label="Announcement">
-          <input name="announcement" defaultValue={(content.announcement as string) ?? ""} className="input-field" />
-        </Field>
-        <Field label="WhatsApp Invite URL">
-          <input name="whatsapp_invite_url" type="url" defaultValue={(content.whatsapp_invite_url as string) ?? ""} placeholder="https://chat.whatsapp.com/..." className="input-field" />
-        </Field>
-      </Section>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm">Community</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="community_intro">Community Introduction</Label>
+            <Textarea id="community_intro" name="community_intro" rows={4} defaultValue={(content.community_intro as string) ?? ""} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="announcement">Announcement</Label>
+            <Input id="announcement" name="announcement" defaultValue={(content.announcement as string) ?? ""} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="whatsapp_invite_url">WhatsApp Invite URL</Label>
+            <Input id="whatsapp_invite_url" name="whatsapp_invite_url" type="url" defaultValue={(content.whatsapp_invite_url as string) ?? ""} placeholder="https://chat.whatsapp.com/..." />
+          </div>
+        </CardContent>
+      </Card>
 
-      <Section title="Social Links">
-        <Field label="GitHub"><input name="social_github" type="url" defaultValue={social.github ?? ""} className="input-field" /></Field>
-        <Field label="Twitter / X"><input name="social_twitter" type="url" defaultValue={social.twitter ?? ""} className="input-field" /></Field>
-        <Field label="Instagram"><input name="social_instagram" type="url" defaultValue={social.instagram ?? ""} className="input-field" /></Field>
-        <Field label="LinkedIn"><input name="social_linkedin" type="url" defaultValue={social.linkedin ?? ""} className="input-field" /></Field>
-        <Field label="YouTube"><input name="social_youtube" type="url" defaultValue={social.youtube ?? ""} className="input-field" /></Field>
-      </Section>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm">Social Links</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="social_github">GitHub</Label>
+            <Input id="social_github" name="social_github" type="url" defaultValue={social.github ?? ""} />
+          </div>
+          <Separator />
+          <div className="space-y-2">
+            <Label htmlFor="social_twitter">Twitter / X</Label>
+            <Input id="social_twitter" name="social_twitter" type="url" defaultValue={social.twitter ?? ""} />
+          </div>
+          <Separator />
+          <div className="space-y-2">
+            <Label htmlFor="social_instagram">Instagram</Label>
+            <Input id="social_instagram" name="social_instagram" type="url" defaultValue={social.instagram ?? ""} />
+          </div>
+          <Separator />
+          <div className="space-y-2">
+            <Label htmlFor="social_linkedin">LinkedIn</Label>
+            <Input id="social_linkedin" name="social_linkedin" type="url" defaultValue={social.linkedin ?? ""} />
+          </div>
+          <Separator />
+          <div className="space-y-2">
+            <Label htmlFor="social_youtube">YouTube</Label>
+            <Input id="social_youtube" name="social_youtube" type="url" defaultValue={social.youtube ?? ""} />
+          </div>
+        </CardContent>
+      </Card>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="flex items-center gap-2 rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-cyan-400 disabled:opacity-50"
-      >
+      <Button type="submit" disabled={loading}>
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
         Save settings
-      </button>
+      </Button>
     </form>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h2 className="mb-4 text-sm font-semibold text-white">{title}</h2>
-      <div className="space-y-4">{children}</div>
-    </div>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <label className="mb-1.5 block text-sm font-medium text-gray-300">{label}</label>
-      {children}
-    </div>
   );
 }

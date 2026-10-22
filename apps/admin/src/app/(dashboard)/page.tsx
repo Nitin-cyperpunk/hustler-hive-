@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/auth";
 import { Calendar, FolderKanban, Images, FileText } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function DashboardPage() {
   const session = await requireAdmin();
@@ -26,43 +27,46 @@ export default async function DashboardPage() {
   const publishedGallery = gallery.filter((g) => g.status === "published").length;
 
   const stats = [
-    { label: "Published Events", value: publishedEvents, icon: Calendar, color: "text-cyan-400" },
-    { label: "Upcoming Events", value: upcomingEvents, icon: Calendar, color: "text-green-400" },
-    { label: "Draft Events", value: draftEvents, icon: FileText, color: "text-yellow-400" },
-    { label: "Published Projects", value: publishedProjects, icon: FolderKanban, color: "text-cyan-400" },
+    { label: "Published Events", value: publishedEvents, icon: Calendar, color: "text-brand-cyan" },
+    { label: "Upcoming Events", value: upcomingEvents, icon: Calendar, color: "text-brand-success" },
+    { label: "Draft Events", value: draftEvents, icon: FileText, color: "text-brand-yellow" },
+    { label: "Published Projects", value: publishedProjects, icon: FolderKanban, color: "text-brand-cyan" },
     { label: "Gallery Images", value: publishedGallery, icon: Images, color: "text-purple-400" },
   ];
 
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-lg font-bold text-white">Welcome back</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-lg font-bold text-brand-text">Welcome back</h1>
+        <p className="text-sm text-brand-muted">
           Signed in as {session.email} ({session.role.replace("_", " ")})
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-xl border border-white/5 bg-[#0D1422] p-4"
-          >
-            <div className="flex items-center gap-2">
+          <Card key={stat.label}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-xs font-medium text-brand-muted">
+                {stat.label}
+              </CardTitle>
               <stat.icon className={`h-4 w-4 ${stat.color}`} />
-              <span className="text-xs text-gray-500">{stat.label}</span>
-            </div>
-            <p className="mt-2 text-2xl font-bold text-white">{stat.value}</p>
-          </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-brand-text">{stat.value}</div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
       {events.length === 0 && projects.length === 0 && (
-        <div className="mt-8 rounded-xl border border-white/5 bg-[#0D1422] p-8 text-center">
-          <p className="text-sm text-gray-500">
-            No content yet. Start by creating your first event or project.
-          </p>
-        </div>
+        <Card className="mt-8">
+          <CardContent className="py-8 text-center">
+            <p className="text-sm text-brand-muted">
+              No content yet. Start by creating your first event or project.
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

@@ -3,6 +3,15 @@
 import { useState } from "react";
 import { Loader2, AlertCircle } from "lucide-react";
 import { ImageUpload } from "@/components/image-upload";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface ProjectData {
   id?: string;
@@ -33,6 +42,8 @@ export function ProjectForm({
   const [loading, setLoading] = useState(false);
   const [slug, setSlug] = useState(project?.slug ?? "");
   const [coverPath, setCoverPath] = useState(project?.cover_image_path ?? "");
+  const [status, setStatus] = useState(project?.status ?? "draft");
+  const [featured, setFeatured] = useState(project?.featured ?? false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -41,6 +52,8 @@ export function ProjectForm({
 
     const formData = new FormData(e.currentTarget);
     if (coverPath) formData.set("cover_image_path", coverPath);
+    formData.set("status", status);
+    if (featured) formData.set("featured", "on");
 
     const result = await action(formData);
     if (result?.error) {
@@ -50,105 +63,96 @@ export function ProjectForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
-      {error && (
-        <div className="flex items-start gap-2 rounded-lg border border-red-500/20 bg-red-500/5 px-3 py-2.5 text-sm text-red-400">
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-          {error}
-        </div>
-      )}
+    <Card className="max-w-2xl">
+      <CardContent className="pt-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <div className="flex items-start gap-2 rounded-lg border border-brand-error/20 bg-brand-error/5 px-3 py-2.5 text-sm text-brand-error">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              {error}
+            </div>
+          )}
 
-      <Field label="Title" required>
-        <input
-          name="title"
-          required
-          defaultValue={project?.title}
-          onChange={(e) => {
-            if (!project?.id) setSlug(slugify(e.target.value));
-          }}
-          className="input-field"
-        />
-      </Field>
-
-      <Field label="Slug">
-        <input
-          name="slug"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value)}
-          className="input-field font-mono text-xs"
-        />
-      </Field>
-
-      <Field label="Summary">
-        <textarea name="summary" rows={2} defaultValue={project?.summary ?? ""} className="input-field" />
-      </Field>
-
-      <Field label="Description">
-        <textarea name="description" rows={5} defaultValue={project?.description ?? ""} className="input-field" />
-      </Field>
-
-      <Field label="Cover Image">
-        <ImageUpload folder="projects" currentPath={coverPath} onUpload={setCoverPath} />
-        <input type="hidden" name="cover_image_path" value={coverPath} />
-      </Field>
-
-      <Field label="Repository URL">
-        <input name="repository_url" type="url" defaultValue={project?.repository_url ?? ""} placeholder="https://github.com/..." className="input-field" />
-      </Field>
-
-      <Field label="Live URL">
-        <input name="live_url" type="url" defaultValue={project?.live_url ?? ""} placeholder="https://..." className="input-field" />
-      </Field>
-
-      <Field label="Technologies (comma-separated)">
-        <input
-          name="technologies"
-          defaultValue={(project?.technologies ?? []).join(", ")}
-          placeholder="Next.js, TypeScript, Supabase"
-          className="input-field"
-        />
-      </Field>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Status">
-          <select name="status" defaultValue={project?.status ?? "draft"} className="input-field">
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-          </select>
-        </Field>
-
-        <Field label="Featured">
-          <label className="flex items-center gap-2 pt-1">
-            <input
-              type="checkbox"
-              name="featured"
-              defaultChecked={project?.featured}
-              className="h-4 w-4 rounded border-white/10 bg-white/5 text-cyan-400 focus:ring-cyan-400/20"
+          <div className="space-y-2">
+            <Label htmlFor="title">Title <span className="text-brand-error">*</span></Label>
+            <Input
+              id="title"
+              name="title"
+              required
+              defaultValue={project?.title}
+              onChange={(e) => {
+                if (!project?.id) setSlug(slugify(e.target.value));
+              }}
             />
-            <span className="text-sm text-gray-400">Show as featured</span>
-          </label>
-        </Field>
-      </div>
+          </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="flex items-center gap-2 rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-cyan-400 disabled:opacity-50"
-      >
-        {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-        {project?.id ? "Save changes" : "Create project"}
-      </button>
-    </form>
-  );
-}
+          <div className="space-y-2">
+            <Label htmlFor="slug">Slug</Label>
+            <Input id="slug" name="slug" value={slug} onChange={(e) => setSlug(e.target.value)} className="font-mono text-xs" />
+          </div>
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
-  return (
-    <div>
-      <label className="mb-1.5 block text-sm font-medium text-gray-300">
-        {label}{required && <span className="text-red-400">*</span>}
-      </label>
-      {children}
-    </div>
+          <div className="space-y-2">
+            <Label htmlFor="summary">Summary</Label>
+            <Textarea id="summary" name="summary" rows={2} defaultValue={project?.summary ?? ""} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea id="description" name="description" rows={5} defaultValue={project?.description ?? ""} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Cover Image</Label>
+            <ImageUpload folder="projects" currentPath={coverPath} onUpload={setCoverPath} />
+            <input type="hidden" name="cover_image_path" value={coverPath} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="repository_url">Repository URL</Label>
+            <Input id="repository_url" name="repository_url" type="url" defaultValue={project?.repository_url ?? ""} placeholder="https://github.com/..." />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="live_url">Live URL</Label>
+            <Input id="live_url" name="live_url" type="url" defaultValue={project?.live_url ?? ""} placeholder="https://..." />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="technologies">Technologies (comma-separated)</Label>
+            <Input id="technologies" name="technologies" defaultValue={(project?.technologies ?? []).join(", ")} placeholder="Next.js, TypeScript, Supabase" />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Select value={status} onValueChange={setStatus}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="published">Published</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Featured</Label>
+              <div className="flex items-center gap-2 pt-1">
+                <Switch checked={featured} onCheckedChange={setFeatured} />
+                <span className="text-sm text-brand-muted">Show as featured</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <Button type="submit" disabled={loading}>
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {project?.id ? "Save changes" : "Create project"}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
