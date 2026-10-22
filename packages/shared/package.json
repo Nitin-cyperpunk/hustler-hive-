@@ -15,6 +15,10 @@
       "types": "./src/supabase/env.ts",
       "default": "./src/supabase/env.ts"
     },
+    "./supabase/ssr": {
+      "types": "./src/supabase/ssr.ts",
+      "default": "./src/supabase/ssr.ts"
+    },
     "./database.types": {
       "types": "./src/database.types.ts",
       "default": "./src/database.types.ts"

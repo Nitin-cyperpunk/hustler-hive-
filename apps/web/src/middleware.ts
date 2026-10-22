@@ -1,4 +1,4 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient } from "@hustlers-hive/shared/supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { getSupabaseUrl, getSupabaseAnonKey } from "@hustlers-hive/shared/supabase/env";
 
