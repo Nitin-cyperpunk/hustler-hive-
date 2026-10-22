@@ -1,0 +1,20 @@
+{
+  "name": "hustlers-hive",
+  "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "format": "turbo format",
+    "clean": "turbo clean"
+  },
+  "devDependencies": {
+    "supabase": "^2.121.0",
+    "turbo": "^2.5.4"
+  }
+}

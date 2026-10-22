@@ -1,0 +1,34 @@
+{
+  "name": "@hustlers-hive/shared",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./supabase/client": {
+      "types": "./src/supabase/client.ts",
+      "default": "./src/supabase/client.ts"
+    },
+    "./supabase/env": {
+      "types": "./src/supabase/env.ts",
+      "default": "./src/supabase/env.ts"
+    },
+    "./database.types": {
+      "types": "./src/database.types.ts",
+      "default": "./src/database.types.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@hustlers-hive/typescript-config": "workspace:*",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.118.0"
+  }
+}
