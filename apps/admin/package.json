@@ -12,10 +12,16 @@
   "dependencies": {
     "@hustlers-hive/shared": "workspace:*",
     "@hustlers-hive/ui": "workspace:*",
+    "@radix-ui/react-label": "^2.1.17",
+    "@radix-ui/react-separator": "^1.2.0",
+    "@radix-ui/react-slot": "^1.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.487.0",
     "next": "^15.3.3",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",

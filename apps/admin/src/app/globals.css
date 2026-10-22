@@ -1,8 +1,51 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-bg: #080B12;
+  --color-brand-bg-secondary: #0D1422;
+  --color-brand-surface: #121C2C;
+  --color-brand-cyan: #22D3EE;
+  --color-brand-yellow: #FACC15;
+  --color-brand-text: #F8FAFC;
+  --color-brand-muted: #94A3B8;
+  --color-brand-border: #1E293B;
+  --color-brand-success: #34D399;
+  --color-brand-warning: #FBBF24;
+  --color-brand-error: #F87171;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+:root {
+  --hh-bg: #080B12;
+  --hh-bg-secondary: #0D1422;
+  --hh-surface: #121C2C;
+  --hh-cyan: #22D3EE;
+  --hh-yellow: #FACC15;
+  --hh-text: #F8FAFC;
+  --hh-muted: #94A3B8;
+  --hh-border: #1E293B;
+  --hh-success: #34D399;
+  --hh-warning: #FBBF24;
+  --hh-error: #F87171;
+}
+
+body {
+  background-color: var(--hh-bg);
+  color: var(--hh-text);
+}
+
+::selection {
+  background-color: #22D3EE33;
+  color: #F8FAFC;
+}
+
 @layer base {
   .input-field {
-    @apply w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-gray-500 outline-none transition-colors focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20;
+    @apply w-full rounded-lg border border-brand-border bg-white/5 px-3 py-2.5 text-sm text-brand-text placeholder-brand-muted outline-none transition-colors focus:border-brand-cyan/50 focus:ring-1 focus:ring-brand-cyan/20;
   }
 
   select.input-field {
