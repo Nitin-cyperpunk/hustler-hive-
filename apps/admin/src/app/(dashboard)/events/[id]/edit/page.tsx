@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
 import { EventForm } from "@/components/event-form";
 import { updateEvent } from "../../actions";
 
@@ -9,7 +9,7 @@ export default async function EditEventPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAdmin("editor");
+  await requirePermission("events.update");
   const { id } = await params;
   const supabase = await createServerSupabaseClient();
 

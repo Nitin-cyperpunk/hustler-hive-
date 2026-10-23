@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
 
 function slugify(text: string): string {
   return text
@@ -13,7 +13,7 @@ function slugify(text: string): string {
 }
 
 export async function createEvent(formData: FormData) {
-  const session = await requireAdmin("editor");
+  const session = await requirePermission("events.create");
   const supabase = await createServerSupabaseClient();
 
   const title = (formData.get("title") as string)?.trim();
@@ -57,7 +57,7 @@ export async function createEvent(formData: FormData) {
 }
 
 export async function updateEvent(id: string, formData: FormData) {
-  await requireAdmin("editor");
+  await requirePermission("events.update");
   const supabase = await createServerSupabaseClient();
 
   const title = (formData.get("title") as string)?.trim();
@@ -115,7 +115,7 @@ export async function updateEvent(id: string, formData: FormData) {
 }
 
 export async function deleteEvent(id: string) {
-  await requireAdmin("admin");
+  await requirePermission("events.delete");
   const supabase = await createServerSupabaseClient();
 
   const { error } = await supabase.from("events").delete().eq("id", id);

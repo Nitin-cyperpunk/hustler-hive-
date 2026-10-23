@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
 
 export async function uploadGalleryImage(storagePath: string) {
-  const session = await requireAdmin("editor");
+  const session = await requirePermission("gallery.submit");
   const supabase = await createServerSupabaseClient();
 
   const { error } = await supabase.from("gallery_images").insert({
@@ -20,7 +20,7 @@ export async function uploadGalleryImage(storagePath: string) {
 }
 
 export async function updateGalleryImage(id: string, formData: FormData) {
-  await requireAdmin("editor");
+  await requirePermission("gallery.publish");
   const supabase = await createServerSupabaseClient();
 
   const altText = (formData.get("alt_text") as string)?.trim() || null;
@@ -39,7 +39,7 @@ export async function updateGalleryImage(id: string, formData: FormData) {
 }
 
 export async function deleteGalleryImage(id: string) {
-  await requireAdmin("editor");
+  await requirePermission("gallery.delete");
   const supabase = await createServerSupabaseClient();
 
   const { error } = await supabase.from("gallery_images").delete().eq("id", id);

@@ -1,2 +1,2 @@
 export { createServerClient, createBrowserClient } from "@supabase/ssr";
-export { SupabaseClient } from "@supabase/supabase-js";
+export { SupabaseClient, createClient as createSupabaseClient } from "@supabase/supabase-js";

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BRAND, ICONS, TEXTURES } from "@/lib/assets";
+import { BRAND, ICONS } from "@/lib/assets";
 import { getSiteSettings } from "@/lib/supabase/queries";
 
 const exploreLinks = [

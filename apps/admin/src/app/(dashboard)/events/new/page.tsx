@@ -1,9 +1,9 @@
-import { requireAdmin } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
 import { EventForm } from "@/components/event-form";
 import { createEvent } from "../actions";
 
 export default async function NewEventPage() {
-  await requireAdmin("editor");
+  await requirePermission("events.create");
 
   return (
     <div>

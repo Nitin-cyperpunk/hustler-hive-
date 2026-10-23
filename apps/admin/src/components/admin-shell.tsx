@@ -14,6 +14,8 @@ import {
   Menu,
   PanelLeftClose,
   PanelLeft,
+  Users,
+  ScrollText,
 } from "lucide-react";
 import type { AdminSession } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
@@ -41,7 +43,9 @@ const navItems = [
   { icon: Calendar, label: "Events", href: "/events" },
   { icon: FolderKanban, label: "Projects", href: "/projects" },
   { icon: Images, label: "Gallery", href: "/gallery" },
-  { icon: Settings, label: "Settings", href: "/settings", minRole: "admin" as const },
+  { icon: Users, label: "Team", href: "/team", minRole: "super_admin" as const },
+  { icon: Settings, label: "Settings", href: "/settings", minRole: "core_team" as const },
+  { icon: ScrollText, label: "Audit Logs", href: "/audit-logs", minRole: "super_admin" as const },
 ];
 
 export function AdminShell({
@@ -60,7 +64,7 @@ export function AdminShell({
     return pathname.startsWith(href);
   }
 
-  const roleHierarchy = { editor: 0, admin: 1, super_admin: 2 } as const;
+  const roleHierarchy = { member: 0, volunteer: 1, core_team: 2, super_admin: 3 } as const;
   const userLevel = roleHierarchy[session.role as keyof typeof roleHierarchy] ?? 0;
 
   const visibleItems = navItems.filter((item) => {

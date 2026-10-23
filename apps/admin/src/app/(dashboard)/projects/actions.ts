@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
 
 function slugify(text: string): string {
   return text
@@ -13,7 +13,7 @@ function slugify(text: string): string {
 }
 
 export async function createProject(formData: FormData) {
-  const session = await requireAdmin("editor");
+  const session = await requirePermission("projects.create");
   const supabase = await createServerSupabaseClient();
 
   const title = (formData.get("title") as string)?.trim();
@@ -55,7 +55,7 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(id: string, formData: FormData) {
-  await requireAdmin("editor");
+  await requirePermission("projects.update");
   const supabase = await createServerSupabaseClient();
 
   const title = (formData.get("title") as string)?.trim();

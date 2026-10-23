@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
 import { ProjectForm } from "@/components/project-form";
 import { updateProject } from "../../actions";
 
@@ -9,7 +9,7 @@ export default async function EditProjectPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAdmin("editor");
+  await requirePermission("projects.update");
   const { id } = await params;
   const supabase = await createServerSupabaseClient();
 

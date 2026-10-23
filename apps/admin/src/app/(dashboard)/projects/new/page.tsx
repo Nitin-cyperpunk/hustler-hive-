@@ -1,9 +1,9 @@
-import { requireAdmin } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
 import { ProjectForm } from "@/components/project-form";
 import { createProject } from "../actions";
 
 export default async function NewProjectPage() {
-  await requireAdmin("editor");
+  await requirePermission("projects.create");
 
   return (
     <div>

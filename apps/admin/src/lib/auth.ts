@@ -1,15 +1,29 @@
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export type AdminRole = "super_admin" | "admin" | "editor";
+export type AdminRole = "super_admin" | "core_team" | "volunteer" | "member";
+
+export type AdminStatus = "active" | "invited" | "deactivated";
 
 export interface AdminSession {
   userId: string;
   email: string;
   role: AdminRole;
+  status: AdminStatus;
+  permissions: string[];
 }
 
-export async function requireAdmin(minRole: AdminRole = "editor"): Promise<AdminSession> {
+const ROLE_HIERARCHY: AdminRole[] = ["member", "volunteer", "core_team", "super_admin"];
+
+export function roleLevel(role: AdminRole): number {
+  return ROLE_HIERARCHY.indexOf(role);
+}
+
+export function hasMinRole(userRole: AdminRole, minRole: AdminRole): boolean {
+  return roleLevel(userRole) >= roleLevel(minRole);
+}
+
+export async function requireAdmin(minRole: AdminRole = "volunteer"): Promise<AdminSession> {
   const supabase = await createServerSupabaseClient();
 
   const { data: { user }, error } = await supabase.auth.getUser();
@@ -20,26 +34,42 @@ export async function requireAdmin(minRole: AdminRole = "editor"): Promise<Admin
 
   const { data: adminUser } = await supabase
     .from("admin_users")
-    .select("role")
+    .select("role, status")
     .eq("user_id", user.id)
     .single();
 
-  if (!adminUser) {
+  if (!adminUser || adminUser.status !== "active") {
     redirect("/login");
   }
 
   const role = adminUser.role as AdminRole;
-  const hierarchy: AdminRole[] = ["editor", "admin", "super_admin"];
-  const userLevel = hierarchy.indexOf(role);
-  const requiredLevel = hierarchy.indexOf(minRole);
 
-  if (userLevel < requiredLevel) {
+  if (!hasMinRole(role, minRole)) {
     redirect("/login");
   }
+
+  const { data: perms } = await supabase
+    .from("role_permissions")
+    .select("permission")
+    .eq("role", role);
+
+  const permissions = (perms ?? []).map((p) => p.permission);
 
   return {
     userId: user.id,
     email: user.email ?? "",
     role,
+    status: adminUser.status as AdminStatus,
+    permissions,
   };
+}
+
+export async function requirePermission(permission: string): Promise<AdminSession> {
+  const session = await requireAdmin("member");
+
+  if (!session.permissions.includes(permission)) {
+    redirect("/login");
+  }
+
+  return session;
 }

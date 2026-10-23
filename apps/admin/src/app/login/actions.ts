@@ -27,13 +27,18 @@ export async function login(formData: FormData) {
 
   const { data: adminUser } = await supabase
     .from("admin_users")
-    .select("role")
+    .select("role, status")
     .eq("user_id", user.id)
     .single();
 
   if (!adminUser) {
     await supabase.auth.signOut();
     return { error: "You are not authorized to access this dashboard." };
+  }
+
+  if (adminUser.status === "deactivated") {
+    await supabase.auth.signOut();
+    return { error: "Your account has been deactivated. Contact a Super Admin." };
   }
 
   redirect("/");

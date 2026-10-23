@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
 
 export async function updateSettings(formData: FormData) {
-  const session = await requireAdmin("admin");
+  const session = await requirePermission("settings.manage");
   const supabase = await createServerSupabaseClient();
 
   const content = {

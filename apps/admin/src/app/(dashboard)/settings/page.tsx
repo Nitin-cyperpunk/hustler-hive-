@@ -1,9 +1,9 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
 import { SettingsForm } from "@/components/settings-form";
 
 export default async function SettingsPage() {
-  await requireAdmin("admin");
+  await requirePermission("settings.manage");
   const supabase = await createServerSupabaseClient();
 
   const { data: settings } = await supabase
