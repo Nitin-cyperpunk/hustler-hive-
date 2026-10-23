@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustlerhive.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -36,16 +36,32 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     siteName: "Hustlers Hive",
-    title: "Hustlers Hive | Student Tech Community in Nashik",
+    title: "Hustlers Hive | Ideas Meet Impact",
     description:
-      "A student-driven technology community in Nashik — learn, build, collaborate, and attend tech events.",
+      "Discover Hustlers Hive, a student-driven technology community in Nashik, Maharashtra. Learn together, build projects, explore open source, and connect with fellow student technologists.",
     url: SITE_URL,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Hustlers Hive — student-driven technology community in Nashik",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hustlers Hive | Student Tech Community in Nashik",
+    title: "Hustlers Hive | Ideas Meet Impact",
     description:
-      "A student-driven technology community in Nashik — learn, build, collaborate, and attend tech events.",
+      "Discover Hustlers Hive, a student-driven technology community in Nashik, Maharashtra. Learn together, build projects, explore open source, and connect with fellow student technologists.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Hustlers Hive — student-driven technology community in Nashik",
+      },
+    ],
   },
   robots: {
     index: true,

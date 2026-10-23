@@ -7,7 +7,7 @@ import { Footer } from "@/components/footer";
 import { NASHIK, TEXTURES, ILLUSTRATIONS, ICONS, BRAND } from "@/lib/assets";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustlerhive.vercel.app";
 
 export const metadata: Metadata = {
   title: "About",

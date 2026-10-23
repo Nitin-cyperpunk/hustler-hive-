@@ -125,7 +125,7 @@ export default function OgImage() {
             color: "#64748B",
           }}
         >
-          hustlershive.in
+          hustlerhive.vercel.app
         </div>
       </div>
     ),

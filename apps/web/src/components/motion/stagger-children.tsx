@@ -28,18 +28,22 @@ export function StaggerChildren({
       const items = ref.current.querySelectorAll(selector);
       if (items.length === 0) return;
 
-      gsap.from(items, {
-        y: 30,
-        opacity: 0,
-        duration: 0.6,
-        stagger,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ref.current,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
-      });
+      gsap.fromTo(
+        items,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          stagger,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ref.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
     },
     { scope: ref, dependencies: [reduced] }
   );

@@ -32,25 +32,29 @@ export function ScrollReveal({
       const x = direction === "left" ? -distance : direction === "right" ? distance : 0;
       const y = direction === "up" ? distance : direction === "down" ? -distance : 0;
 
-      gsap.from(ref.current, {
-        x,
-        y,
-        opacity: 0,
-        duration,
-        delay,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ref.current,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
-      });
+      gsap.fromTo(
+        ref.current,
+        { x, y, opacity: 0 },
+        {
+          x: 0,
+          y: 0,
+          opacity: 1,
+          duration,
+          delay,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ref.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
     },
     { scope: ref, dependencies: [reduced] }
   );
 
   return (
-    <div ref={ref} className={className} style={reduced ? undefined : { opacity: 0 }}>
+    <div ref={ref} className={className}>
       {children}
     </div>
   );

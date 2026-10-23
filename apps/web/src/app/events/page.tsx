@@ -9,7 +9,7 @@ import { formatDate, isUpcoming } from "@/lib/format";
 import { ICONS, TEXTURES } from "@/lib/assets";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustlerhive.vercel.app";
 
 export const metadata: Metadata = {
   title: "Events",

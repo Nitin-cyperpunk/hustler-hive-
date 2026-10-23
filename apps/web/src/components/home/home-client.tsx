@@ -5,6 +5,7 @@ import { HeroSection } from "@/components/hero";
 import { CommunityStatus } from "@/components/home/community-status";
 import { HackathonSection } from "@/components/home/hackathon-section";
 import { CommunitySection } from "@/components/home/community-section";
+import { TeamSection } from "@/components/home/team-section";
 import { CTASection } from "@/components/home/cta-section";
 
 export function HomeClient({
@@ -24,7 +25,9 @@ export function HomeClient({
       <HackathonSection />
       {/* 6. Community — "Find your people" */}
       <CommunitySection />
-      {/* 7. Final CTA */}
+      {/* 7. Team — "Meet the Core Team" */}
+      <TeamSection />
+      {/* 8. Final CTA */}
       <CTASection />
     </SmoothScroll>
   );
