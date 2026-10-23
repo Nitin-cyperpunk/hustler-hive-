@@ -6,10 +6,14 @@ import { Footer } from "@/components/footer";
 import { getPublishedProjects } from "@/lib/supabase/queries";
 import { ICONS, TEXTURES } from "@/lib/assets";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
+
 export const metadata: Metadata = {
   title: "Projects",
   description:
     "Explore open-source projects built by the Hustlers Hive community.",
+  alternates: { canonical: `${SITE_URL}/projects` },
 };
 
 export const revalidate = 60;

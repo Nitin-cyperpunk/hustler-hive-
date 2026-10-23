@@ -6,10 +6,14 @@ import { Footer } from "@/components/footer";
 import { getSiteSettings } from "@/lib/supabase/queries";
 import { TEXTURES, ILLUSTRATIONS } from "@/lib/assets";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
+
 export const metadata: Metadata = {
   title: "Contact",
   description:
     "Get in touch with Hustlers Hive — questions, collaborations, or just say hi.",
+  alternates: { canonical: `${SITE_URL}/contact` },
 };
 
 export const revalidate = 60;

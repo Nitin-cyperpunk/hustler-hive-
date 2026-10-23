@@ -4,8 +4,12 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, MapPin, ExternalLink } from "lucide-react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
 import { getEventBySlug } from "@/lib/supabase/queries";
 import { formatDateRange, isUpcoming } from "@/lib/format";
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -18,6 +22,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: event.title,
     description: event.summary ?? `${event.title} — an event by Hustlers Hive.`,
+    alternates: { canonical: `${SITE_URL}/events/${slug}` },
+    openGraph: {
+      title: event.title,
+      description: event.summary ?? `${event.title} — an event by Hustlers Hive.`,
+      type: "article",
+    },
   };
 }
 
@@ -30,8 +40,33 @@ export default async function EventDetailPage({ params }: Props) {
 
   const upcoming = isUpcoming(event.starts_at);
 
+  const eventLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.title,
+    description: event.summary ?? event.title,
+    startDate: event.starts_at,
+    ...(event.ends_at ? { endDate: event.ends_at } : {}),
+    ...(event.location_name
+      ? {
+          location: {
+            "@type": "Place",
+            name: event.location_name,
+          },
+        }
+      : {}),
+    organizer: {
+      "@type": "Organization",
+      name: "Hustlers Hive",
+      url: SITE_URL,
+    },
+    url: `${SITE_URL}/events/${event.slug}`,
+    eventStatus: "https://schema.org/EventScheduled",
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
+      <JsonLd data={eventLd} />
       <Header />
       <main className="flex-1">
         <article className="py-16 sm:py-24">

@@ -6,10 +6,14 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { NASHIK, TEXTURES, ILLUSTRATIONS, ICONS, BRAND } from "@/lib/assets";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
+
 export const metadata: Metadata = {
   title: "About",
   description:
     "Learn about Hustlers Hive — a student-driven technology community rooted in Nashik, Maharashtra.",
+  alternates: { canonical: `${SITE_URL}/about` },
 };
 
 const values = [

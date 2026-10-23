@@ -6,10 +6,14 @@ import { Footer } from "@/components/footer";
 import { getSiteSettings } from "@/lib/supabase/queries";
 import { ICONS, TEXTURES, BRAND } from "@/lib/assets";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
+
 export const metadata: Metadata = {
   title: "Community",
   description:
     "Join Hustlers Hive — connect with student developers, designers, and builders in Nashik.",
+  alternates: { canonical: `${SITE_URL}/community` },
 };
 
 export const revalidate = 60;

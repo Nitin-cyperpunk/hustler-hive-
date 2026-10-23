@@ -6,10 +6,14 @@ import { Footer } from "@/components/footer";
 import { getPublishedGalleryImages } from "@/lib/supabase/queries";
 import { ICONS, TEXTURES } from "@/lib/assets";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
+
 export const metadata: Metadata = {
   title: "Gallery",
   description:
     "Photos and moments from Hustlers Hive events, workshops, and community gatherings.",
+  alternates: { canonical: `${SITE_URL}/gallery` },
 };
 
 export const revalidate = 60;

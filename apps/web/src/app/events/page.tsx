@@ -8,10 +8,14 @@ import { getPublishedEvents } from "@/lib/supabase/queries";
 import { formatDate, isUpcoming } from "@/lib/format";
 import { ICONS, TEXTURES } from "@/lib/assets";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
+
 export const metadata: Metadata = {
   title: "Events",
   description:
     "Discover upcoming and past events organized by Hustlers Hive — meetups, hackathons, workshops, and more in Nashik.",
+  alternates: { canonical: `${SITE_URL}/events` },
 };
 
 export const revalidate = 60;

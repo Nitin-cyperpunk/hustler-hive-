@@ -4,28 +4,9 @@ import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
-import { gsap, ScrollTrigger } from "@/lib/motion/gsap";
+import { gsap } from "@/lib/motion/gsap";
 import { useReducedMotion } from "@/lib/motion/use-reduced-motion";
 import { BRAND, ICONS } from "@/lib/assets";
-
-const PARALLAX_LAYERS = [
-  { src: "/fotter/layer-4-sky-clouds-moon-stars.png", alt: "", speed: 0.1 },
-  {
-    src: "/fotter/layer-3-mountains-vineyards-trimbakeshwar.png",
-    alt: "",
-    speed: 0.22,
-  },
-  {
-    src: "/fotter/layer-2-panchvati-ghats-godavari.png",
-    alt: "Illustration of Panchvati ghats and Godavari river, Nashik",
-    speed: 0.38,
-  },
-  {
-    src: "/fotter/layer-1-foreground-grapevines.png",
-    alt: "",
-    speed: 0.55,
-  },
-] as const;
 
 const exploreLinks = [
   { label: "Home", href: "/" },
@@ -43,9 +24,10 @@ const communityLinks = [
   { label: "Hackathons", href: "/events" },
   { label: "Student Projects", href: "/projects" },
   { label: "Open Source", href: "/projects" },
+  { label: "Join Community", href: "/community" },
 ];
 
-const principles = [
+const chips = [
   { label: "Learn", icon: ICONS.features.workshop },
   { label: "Build", icon: ICONS.features.code },
   { label: "Collaborate", icon: ICONS.features.community },
@@ -71,16 +53,13 @@ export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
       if (reduced || !sceneRef.current) return;
 
       const layers = layerRefs.current.filter(Boolean) as HTMLDivElement[];
-      const triggers: ScrollTrigger[] = [];
+      const speeds = [0.08, 0.18, 0.32, 0.48];
 
       layers.forEach((layer, i) => {
-        const speed = PARALLAX_LAYERS[i].speed;
-        const distance = speed * 120;
-
-        gsap.set(layer, { y: distance * 0.5 });
-
-        const tween = gsap.to(layer, {
-          y: -distance * 0.5,
+        const travel = speeds[i] * 60;
+        gsap.set(layer, { y: travel * 0.5 });
+        gsap.to(layer, {
+          y: -travel * 0.5,
           ease: "none",
           scrollTrigger: {
             trigger: sceneRef.current,
@@ -89,13 +68,7 @@ export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
             scrub: 0.6,
           },
         });
-
-        if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
       });
-
-      return () => {
-        triggers.forEach((st) => st.kill());
-      };
     },
     { scope: footerRef, dependencies: [reduced] },
   );
@@ -103,250 +76,320 @@ export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
   return (
     <footer
       ref={footerRef}
-      className="relative overflow-hidden bg-[#060911]"
+      className="relative overflow-hidden"
+      style={{ backgroundColor: "#050810" }}
       role="contentinfo"
     >
-      {/* ── Top gradient: page → footer blend ── */}
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24"
-        style={{
-          background:
-            "linear-gradient(to bottom, var(--color-brand-bg) 0%, transparent 100%)",
-        }}
-      />
+      {/* ═══ ZONE A — Content ═══ */}
+      <div className="relative z-20" style={{ backgroundColor: "#050810" }}>
+        {/* Top blend from page */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-px"
+          style={{ backgroundColor: "rgba(30,41,59,0.3)" }}
+        />
 
-      {/* ── Main footer content ── */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-16 pb-8 sm:px-6 lg:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12">
-          {/* Column 1 — Brand */}
-          <div className="lg:col-span-4">
-            <Link href="/" className="inline-flex items-center gap-2.5">
-              <Image
-                src={BRAND.logoFull}
-                alt="Hustlers Hive"
-                width={48}
-                height={48}
-                className="h-12 w-12"
-              />
-              <span className="text-xl font-bold tracking-tight">
-                <span className="text-brand-cyan">Hustlers</span>{" "}
-                <span className="text-brand-yellow">Hive</span>
-              </span>
-            </Link>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-brand-muted">
-              A student-driven technology community rooted in Nashik, Maharashtra
-              — building the next generation of student technologists through
-              collaboration, open source and real-world impact.
-            </p>
-
-            <div className="mt-5 flex flex-wrap gap-2.5">
-              {principles.map((p) => (
-                <span
-                  key={p.label}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-brand-muted backdrop-blur-sm"
-                >
-                  <Image
-                    src={p.icon}
-                    alt=""
-                    width={12}
-                    height={12}
-                    className="h-3 w-3"
-                    style={{ filter: CYAN_FILTER }}
-                  />
-                  {p.label}
+        <div className="mx-auto max-w-7xl px-4 pb-10 pt-14 sm:px-6 lg:px-8">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6">
+            {/* Col 1 — Brand */}
+            <div className="lg:col-span-4">
+              <Link href="/" className="inline-flex items-center gap-2.5">
+                <Image
+                  src={BRAND.logoFull}
+                  alt="Hustlers Hive"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10"
+                />
+                <span className="text-lg font-bold tracking-tight">
+                  <span className="text-brand-cyan">Hustlers</span>{" "}
+                  <span className="text-brand-yellow">Hive</span>
                 </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Column 2 — Explore */}
-          <nav className="lg:col-span-2" aria-label="Explore">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-brand-cyan">
-              Explore
-            </h3>
-            <ul className="mt-4 space-y-2.5">
-              {exploreLinks.map((link) => (
-                <li key={link.href + link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-brand-muted transition-colors hover:text-brand-text focus-visible:text-brand-text focus-visible:outline-none focus-visible:underline"
+              </Link>
+              <p className="mt-3 max-w-[280px] text-[13px] leading-relaxed text-brand-muted">
+                A student-driven technology community rooted in Nashik — building
+                the next generation of technologists through collaboration, open
+                source and real-world impact.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {chips.map((c) => (
+                  <span
+                    key={c.label}
+                    className="inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-brand-muted"
                   >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+                    <Image
+                      src={c.icon}
+                      alt=""
+                      width={10}
+                      height={10}
+                      className="h-2.5 w-2.5"
+                      style={{ filter: CYAN_FILTER }}
+                    />
+                    {c.label}
+                  </span>
+                ))}
+              </div>
+            </div>
 
-          {/* Column 3 — Community */}
-          <nav className="lg:col-span-2" aria-label="Community">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-brand-cyan">
-              Community
-            </h3>
-            <ul className="mt-4 space-y-2.5">
-              {whatsappUrl && (
-                <li>
+            {/* Col 2 — Explore */}
+            <nav className="lg:col-span-2" aria-label="Explore">
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-brand-cyan">
+                Explore
+              </h3>
+              <ul className="mt-3 space-y-2">
+                {exploreLinks.map((link) => (
+                  <li key={link.href + link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-[13px] text-brand-muted transition-colors hover:text-brand-text"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* Col 3 — Community */}
+            <nav className="lg:col-span-2" aria-label="Community">
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-brand-cyan">
+                Community
+              </h3>
+              <ul className="mt-3 space-y-2">
+                {whatsappUrl && (
+                  <li>
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-[13px] text-brand-muted transition-colors hover:text-brand-text"
+                    >
+                      <Image
+                        src={ICONS.social.whatsapp}
+                        alt=""
+                        width={12}
+                        height={12}
+                        className="h-3 w-3 opacity-60"
+                        style={{
+                          filter:
+                            "invert(65%) sepia(60%) saturate(500%) hue-rotate(90deg) brightness(110%)",
+                        }}
+                      />
+                      Join on WhatsApp
+                    </a>
+                  </li>
+                )}
+                {communityLinks.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-[13px] text-brand-muted transition-colors hover:text-brand-text"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* Col 4 — Join CTA */}
+            <div className="lg:col-span-4">
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-5 backdrop-blur-sm">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-cyan/60">
+                  Be part of the hive
+                </p>
+                <h3 className="mt-1.5 text-base font-bold text-brand-text">
+                  Join Hustlers Hive
+                </h3>
+                <p className="mt-1.5 text-[13px] leading-relaxed text-brand-muted">
+                  Whether you&apos;re writing your first line of code or shipping
+                  your tenth project — there&apos;s a seat at the hive for you.
+                </p>
+
+                {whatsappUrl && (
                   <a
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-sm text-brand-muted transition-colors hover:text-brand-text"
+                    className="group mt-4 inline-flex items-center gap-2 rounded-lg bg-brand-yellow px-4 py-2 text-sm font-semibold text-brand-bg shadow-md shadow-brand-yellow/10 transition-all hover:shadow-lg hover:shadow-brand-yellow/20 hover:brightness-110"
+                    aria-label="Join Hustlers Hive on WhatsApp"
                   >
                     <Image
                       src={ICONS.social.whatsapp}
                       alt=""
-                      width={14}
-                      height={14}
-                      className="h-3.5 w-3.5 opacity-60"
-                      style={{
-                        filter:
-                          "invert(65%) sepia(60%) saturate(500%) hue-rotate(90deg) brightness(110%)",
-                      }}
+                      width={16}
+                      height={16}
+                      className="h-4 w-4"
                     />
                     Join on WhatsApp
+                    <span className="transition-transform group-hover:translate-x-0.5">
+                      &#8594;
+                    </span>
                   </a>
-                </li>
-              )}
-              {communityLinks.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-brand-muted transition-colors hover:text-brand-text focus-visible:text-brand-text focus-visible:outline-none focus-visible:underline"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+                )}
 
-          {/* Column 4 — Join CTA */}
-          <div className="lg:col-span-4">
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 backdrop-blur-sm">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-cyan/70">
-                Be part of the hive
-              </p>
-              <h3 className="mt-2 text-lg font-bold text-brand-text">
-                Join Hustlers Hive
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-brand-muted">
-                Whether you&apos;re writing your first line of code or shipping
-                your tenth project — there&apos;s a seat at the hive for you.
-              </p>
-
-              {whatsappUrl && (
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group mt-5 inline-flex items-center gap-2 rounded-lg bg-brand-yellow px-5 py-2.5 text-sm font-semibold text-brand-bg shadow-lg shadow-brand-yellow/10 transition-all hover:shadow-xl hover:shadow-brand-yellow/20 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-[#060911]"
-                  aria-label="Join Hustlers Hive on WhatsApp"
-                >
-                  <Image
-                    src={ICONS.social.whatsapp}
-                    alt=""
-                    width={18}
-                    height={18}
-                    className="h-4.5 w-4.5"
-                  />
-                  Join on WhatsApp
-                  <span className="transition-transform group-hover:translate-x-0.5">
-                    &#8594;
-                  </span>
-                </a>
-              )}
-
-              {/* Social row */}
-              {Object.keys(socials).length > 0 && (
-                <div className="mt-5 flex gap-2">
-                  {Object.entries(socialMeta).map(([key, meta]) => {
-                    const url = socials[key];
-                    if (!url) return null;
-                    return (
-                      <a
-                        key={key}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] transition-all hover:border-brand-cyan/30 hover:bg-brand-cyan/10"
-                        aria-label={`Follow us on ${meta.label}`}
-                      >
-                        <Image
-                          src={meta.icon}
-                          alt=""
-                          width={14}
-                          height={14}
-                          className="h-3.5 w-3.5 opacity-50 transition-opacity group-hover:opacity-100"
-                          style={{ filter: CYAN_FILTER }}
-                        />
-                      </a>
-                    );
-                  })}
-                </div>
-              )}
+                {Object.keys(socials).length > 0 && (
+                  <div className="mt-4 flex gap-1.5">
+                    {Object.entries(socialMeta).map(([key, meta]) => {
+                      const url = socials[key];
+                      if (!url) return null;
+                      return (
+                        <a
+                          key={key}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/[0.08] bg-white/[0.03] transition-all hover:border-brand-cyan/30 hover:bg-brand-cyan/10"
+                          aria-label={`Follow us on ${meta.label}`}
+                        >
+                          <Image
+                            src={meta.icon}
+                            alt=""
+                            width={12}
+                            height={12}
+                            className="h-3 w-3 opacity-50 transition-opacity group-hover:opacity-100"
+                            style={{ filter: CYAN_FILTER }}
+                          />
+                        </a>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Content-to-scene fade */}
+        <div
+          className="h-16 sm:h-20"
+          style={{
+            background:
+              "linear-gradient(to bottom, #050810, transparent)",
+          }}
+        />
       </div>
 
-      {/* ── Parallax landscape scene ── */}
+      {/* ═══ ZONE B — Landscape Scene ═══ */}
       <div
         ref={sceneRef}
-        className="relative z-[2] h-[240px] w-full overflow-hidden sm:h-[300px] md:h-[360px] lg:h-[420px]"
+        className="relative h-[220px] sm:h-[280px] md:h-[340px] lg:h-[400px]"
         aria-hidden="true"
       >
-        {/* Top fade: blend content into scene */}
+        {/* Layer 4 — Sky: fills the entire scene */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32"
-          style={{
-            background:
-              "linear-gradient(to bottom, #060911 0%, transparent 100%)",
-          }}
-        />
+          ref={(el) => { layerRefs.current[0] = el; }}
+          className="absolute inset-0 will-change-transform"
+          style={{ zIndex: 1 }}
+        >
+          <img
+            src="/fotter/layer-4-sky-clouds-moon-stars.png"
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover object-center"
+            style={{ opacity: 0.8 }}
+          />
+        </div>
 
-        {/* Cyan ambient glow behind mountains */}
+        {/* Layer 3 — Mountains: bottom 75% of scene */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-[30%] z-[1] h-[40%]"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(34,211,238,0.06) 0%, transparent 70%)",
-          }}
-        />
-
-        {/* Golden warm glow near riverfront */}
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-[20%] z-[3] h-[30%]"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 50% at 50% 70%, rgba(250,204,21,0.04) 0%, transparent 70%)",
-          }}
-        />
-
-        {PARALLAX_LAYERS.map((layer, i) => (
+          ref={(el) => { layerRefs.current[1] = el; }}
+          className="absolute inset-x-0 bottom-0 will-change-transform"
+          style={{ zIndex: 2, height: "75%" }}
+        >
+          <img
+            src="/fotter/layer-3-mountains-vineyards-trimbakeshwar.png"
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover object-bottom"
+            style={{ opacity: 0.7 }}
+          />
+          {/* Soft top edge blend */}
           <div
-            key={layer.src}
-            ref={(el) => {
-              layerRefs.current[i] = el;
+            className="pointer-events-none absolute inset-x-0 top-0 h-20"
+            style={{
+              background:
+                "linear-gradient(to bottom, rgba(5,8,16,0.6), transparent)",
             }}
-            className="absolute inset-x-0 bottom-0 will-change-transform"
-            style={{ zIndex: i + 1 }}
-          >
-            <img
-              src={layer.src}
-              alt={layer.alt}
-              loading="lazy"
-              className="block h-auto w-full object-cover object-bottom"
-              style={{
-                minHeight: i === 0 ? "100%" : undefined,
-              }}
-            />
-          </div>
-        ))}
+          />
+        </div>
+
+        {/* Layer 2 — Ghats & Godavari: bottom 55% */}
+        <div
+          ref={(el) => { layerRefs.current[2] = el; }}
+          className="absolute inset-x-0 bottom-0 will-change-transform"
+          style={{ zIndex: 3, height: "55%" }}
+        >
+          <img
+            src="/fotter/layer-2-panchvati-ghats-godavari.png"
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover object-bottom"
+          />
+          {/* Soft top edge blend */}
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-16"
+            style={{
+              background:
+                "linear-gradient(to bottom, rgba(5,8,16,0.5), transparent)",
+            }}
+          />
+        </div>
+
+        {/* Layer 1 — Foreground foliage: bottom 28% */}
+        <div
+          ref={(el) => { layerRefs.current[3] = el; }}
+          className="absolute inset-x-0 bottom-0 will-change-transform"
+          style={{ zIndex: 4, height: "28%" }}
+        >
+          <img
+            src="/fotter/layer-1-foreground-grapevines.png"
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover object-bottom"
+          />
+        </div>
+
+        {/* Ambient cyan glow behind mountains */}
+        <div
+          className="pointer-events-none absolute inset-x-0"
+          style={{
+            zIndex: 2,
+            top: "25%",
+            height: "40%",
+            background:
+              "radial-gradient(ellipse 70% 50% at 50% 60%, rgba(34,211,238,0.05) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Warm glow near riverfront */}
+        <div
+          className="pointer-events-none absolute inset-x-0"
+          style={{
+            zIndex: 3,
+            bottom: "15%",
+            height: "30%",
+            background:
+              "radial-gradient(ellipse 50% 40% at 50% 60%, rgba(250,204,21,0.03) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Bottom darken for copyright bar */}
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-12"
+          style={{
+            zIndex: 6,
+            background:
+              "linear-gradient(to bottom, transparent, rgba(3,5,8,0.7))",
+          }}
+        />
       </div>
 
-      {/* ── Bottom bar ── */}
-      <div className="relative z-10 border-t border-white/[0.06] bg-[#040710]/90 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-2 px-4 py-4 text-[11px] text-brand-muted/70 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
+      {/* ═══ ZONE C — Bottom Bar ═══ */}
+      <div
+        className="relative z-20 border-t border-white/[0.06]"
+        style={{ backgroundColor: "rgba(4,6,12,0.92)" }}
+      >
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-1.5 px-4 py-3.5 text-[11px] text-brand-muted/60 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
           <p>&copy; {new Date().getFullYear()} Hustlers Hive. All rights reserved.</p>
           <p className="text-center">
             Built by students. For students. Run by students.
@@ -361,7 +404,7 @@ export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
               href="https://nitinverse.me"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-brand-cyan/80 transition-colors hover:text-brand-cyan focus-visible:outline-none focus-visible:underline"
+              className="font-medium text-brand-cyan/70 transition-colors hover:text-brand-cyan"
               aria-label="Nitinverse — opens in a new tab"
             >
               Nitinverse &#8599;

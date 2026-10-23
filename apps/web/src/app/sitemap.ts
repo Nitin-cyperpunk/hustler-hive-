@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { getPublishedEvents } from "@/lib/supabase/queries";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://hustlershive.in";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://hustler-hive-ten.vercel.app";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const events = await getPublishedEvents();
