@@ -9,39 +9,65 @@ type Event = Database["public"]["Tables"]["events"]["Row"];
 
 export function EventsPreview({ events }: { events: Event[] }) {
   return (
-    <section className="py-20 sm:py-28">
+    <section id="whats-next" className="py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between">
           <div>
             <ScrollReveal>
-              <p className="text-sm font-semibold uppercase tracking-widest text-brand-cyan">
-                Events
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-cyan">
+                Up Next
               </p>
             </ScrollReveal>
             <ScrollReveal delay={0.1}>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-                Upcoming &amp; recent events
+              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+                Good things are in the{" "}
+                <span className="text-brand-cyan">works.</span>
               </h2>
             </ScrollReveal>
+            <ScrollReveal delay={0.15}>
+              <p className="mt-3 max-w-lg text-brand-muted">
+                We&apos;re lining up opportunities to meet, learn, share ideas,
+                and build alongside fellow student technologists.
+              </p>
+            </ScrollReveal>
           </div>
-          <ScrollReveal delay={0.15}>
-            <Link
-              href="/events"
-              className="group hidden items-center gap-1 text-sm font-medium text-brand-cyan sm:inline-flex"
-            >
-              View all events
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          </ScrollReveal>
+          {events.length > 0 && (
+            <ScrollReveal delay={0.15}>
+              <Link
+                href="/events"
+                className="group hidden items-center gap-1 text-sm font-medium text-brand-cyan sm:inline-flex"
+              >
+                View all events
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </ScrollReveal>
+          )}
         </div>
 
         {events.length === 0 ? (
           <ScrollReveal delay={0.2}>
-            <div className="mt-12 rounded-xl border border-dashed border-brand-border p-12 text-center">
-              <Calendar className="mx-auto h-10 w-10 text-brand-muted/40" />
-              <p className="mt-3 text-brand-muted">
-                No events yet. Check back soon!
+            <div className="mt-12 rounded-2xl border border-brand-border bg-brand-surface/30 p-10 text-center sm:p-14">
+              <Calendar className="mx-auto h-10 w-10 text-brand-cyan/30" />
+              <h3 className="mt-4 text-lg font-semibold">
+                Our next meetup is taking shape.
+              </h3>
+              <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-brand-muted">
+                The team is lining up the next set of community events. Check
+                back soon, or join the community to hear about new plans.
               </p>
+              <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-brand-cyan/20 bg-brand-cyan/5 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-brand-cyan">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand-cyan animate-pulse" />
+                Events being lined up
+              </span>
+              <div className="mt-6">
+                <Link
+                  href="/community"
+                  className="group inline-flex items-center gap-2 rounded-lg bg-brand-cyan px-5 py-2.5 text-sm font-semibold text-brand-bg transition-all hover:shadow-lg hover:shadow-brand-cyan/20"
+                >
+                  Join the Community
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              </div>
             </div>
           </ScrollReveal>
         ) : (

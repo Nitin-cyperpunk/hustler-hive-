@@ -44,25 +44,24 @@ interface FooterClientProps {
 
 export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
   const footerRef = useRef<HTMLElement>(null);
-  const sceneRef = useRef<HTMLDivElement>(null);
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const reduced = useReducedMotion();
 
   useGSAP(
     () => {
-      if (reduced || !sceneRef.current) return;
+      if (reduced || !footerRef.current) return;
 
       const layers = layerRefs.current.filter(Boolean) as HTMLDivElement[];
       const speeds = [0.08, 0.18, 0.32, 0.48];
 
       layers.forEach((layer, i) => {
-        const travel = speeds[i] * 60;
+        const travel = speeds[i] * 50;
         gsap.set(layer, { y: travel * 0.5 });
         gsap.to(layer, {
           y: -travel * 0.5,
           ease: "none",
           scrollTrigger: {
-            trigger: sceneRef.current,
+            trigger: footerRef.current,
             start: "top bottom",
             end: "bottom top",
             scrub: 0.6,
@@ -80,15 +79,111 @@ export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
       style={{ backgroundColor: "#050810" }}
       role="contentinfo"
     >
-      {/* ═══ ZONE A — Content ═══ */}
-      <div className="relative z-20" style={{ backgroundColor: "#050810" }}>
-        {/* Top blend from page */}
+      {/* ── Full-bleed landscape background (all 4 layers) ── */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        {/* Layer 4 — Sky */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-px"
-          style={{ backgroundColor: "rgba(30,41,59,0.3)" }}
-        />
+          ref={(el) => { layerRefs.current[0] = el; }}
+          className="absolute inset-0 will-change-transform"
+          style={{ zIndex: 1 }}
+        >
+          <img
+            src="/fotter/layer-4-sky-clouds-moon-stars.png"
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover object-center"
+            style={{ opacity: 0.7 }}
+          />
+        </div>
 
-        <div className="mx-auto max-w-7xl px-4 pb-10 pt-14 sm:px-6 lg:px-8">
+        {/* Layer 3 — Mountains */}
+        <div
+          ref={(el) => { layerRefs.current[1] = el; }}
+          className="absolute inset-x-0 bottom-0 will-change-transform"
+          style={{ zIndex: 2, height: "70%" }}
+        >
+          <img
+            src="/fotter/layer-3-mountains-vineyards-trimbakeshwar.png"
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover object-bottom"
+            style={{ opacity: 0.6 }}
+          />
+        </div>
+
+        {/* Layer 2 — Ghats & Godavari */}
+        <div
+          ref={(el) => { layerRefs.current[2] = el; }}
+          className="absolute inset-x-0 bottom-0 will-change-transform"
+          style={{ zIndex: 3, height: "50%" }}
+        >
+          <img
+            src="/fotter/layer-2-panchvati-ghats-godavari.png"
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover object-bottom"
+          />
+        </div>
+
+        {/* Layer 1 — Foreground foliage */}
+        <div
+          ref={(el) => { layerRefs.current[3] = el; }}
+          className="absolute inset-x-0 bottom-0 will-change-transform"
+          style={{ zIndex: 4, height: "25%" }}
+        >
+          <img
+            src="/fotter/layer-1-foreground-grapevines.png"
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover object-bottom"
+          />
+        </div>
+
+        {/* Ambient glows */}
+        <div
+          className="absolute inset-x-0"
+          style={{
+            zIndex: 5,
+            top: "30%",
+            height: "35%",
+            background:
+              "radial-gradient(ellipse 70% 50% at 50% 50%, rgba(34,211,238,0.04) 0%, transparent 70%)",
+          }}
+        />
+        <div
+          className="absolute inset-x-0"
+          style={{
+            zIndex: 5,
+            bottom: "10%",
+            height: "25%",
+            background:
+              "radial-gradient(ellipse 50% 40% at 50% 60%, rgba(250,204,21,0.03) 0%, transparent 70%)",
+          }}
+        />
+      </div>
+
+      {/* ── Page-to-footer top blend ── */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-24"
+        style={{
+          zIndex: 10,
+          background: "linear-gradient(to bottom, var(--color-brand-bg), transparent)",
+        }}
+      />
+
+      {/* ── Content overlay on top of landscape ── */}
+      <div className="relative" style={{ zIndex: 20 }}>
+        <div className="mx-auto max-w-7xl px-4 pb-6 pt-12 sm:px-6 lg:px-8">
+          {/* Dark scrim behind text for readability */}
+          <div
+            className="absolute inset-0"
+            style={{
+              zIndex: -1,
+              background:
+                "linear-gradient(to bottom, rgba(5,8,16,0.92) 0%, rgba(5,8,16,0.75) 60%, rgba(5,8,16,0.3) 100%)",
+            }}
+          />
+
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6">
             {/* Col 1 — Brand */}
             <div className="lg:col-span-4">
@@ -110,11 +205,11 @@ export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
                 the next generation of technologists through collaboration, open
                 source and real-world impact.
               </p>
-              <div className="mt-4 flex flex-wrap gap-1.5">
+              <div className="mt-3 flex flex-wrap gap-1.5">
                 {chips.map((c) => (
                   <span
                     key={c.label}
-                    className="inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-brand-muted"
+                    className="inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-brand-muted backdrop-blur-sm"
                   >
                     <Image
                       src={c.icon}
@@ -193,7 +288,7 @@ export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
 
             {/* Col 4 — Join CTA */}
             <div className="lg:col-span-4">
-              <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-5 backdrop-blur-sm">
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.04] p-5 backdrop-blur-md">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-cyan/60">
                   Be part of the hive
                 </p>
@@ -228,7 +323,7 @@ export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
                 )}
 
                 {Object.keys(socials).length > 0 && (
-                  <div className="mt-4 flex gap-1.5">
+                  <div className="mt-3 flex gap-1.5">
                     {Object.entries(socialMeta).map(([key, meta]) => {
                       const url = socials[key];
                       if (!url) return null;
@@ -238,7 +333,7 @@ export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
                           href={url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/[0.08] bg-white/[0.03] transition-all hover:border-brand-cyan/30 hover:bg-brand-cyan/10"
+                          className="group inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/[0.08] bg-white/[0.04] transition-all hover:border-brand-cyan/30 hover:bg-brand-cyan/10"
                           aria-label={`Follow us on ${meta.label}`}
                         >
                           <Image
@@ -258,147 +353,21 @@ export function FooterClient({ whatsappUrl, socials }: FooterClientProps) {
             </div>
           </div>
         </div>
-
-        {/* Content-to-scene fade */}
-        <div
-          className="h-16 sm:h-20"
-          style={{
-            background:
-              "linear-gradient(to bottom, #050810, transparent)",
-          }}
-        />
       </div>
 
-      {/* ═══ ZONE B — Landscape Scene ═══ */}
+      {/* ── Bottom bar ── */}
       <div
-        ref={sceneRef}
-        className="relative h-[220px] sm:h-[280px] md:h-[340px] lg:h-[400px]"
-        aria-hidden="true"
+        className="relative border-t border-white/[0.06]"
+        style={{ zIndex: 20, backgroundColor: "rgba(4,6,12,0.85)", backdropFilter: "blur(8px)" }}
       >
-        {/* Layer 4 — Sky: fills the entire scene */}
-        <div
-          ref={(el) => { layerRefs.current[0] = el; }}
-          className="absolute inset-0 will-change-transform"
-          style={{ zIndex: 1 }}
-        >
-          <img
-            src="/fotter/layer-4-sky-clouds-moon-stars.png"
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-cover object-center"
-            style={{ opacity: 0.8 }}
-          />
-        </div>
-
-        {/* Layer 3 — Mountains: bottom 75% of scene */}
-        <div
-          ref={(el) => { layerRefs.current[1] = el; }}
-          className="absolute inset-x-0 bottom-0 will-change-transform"
-          style={{ zIndex: 2, height: "75%" }}
-        >
-          <img
-            src="/fotter/layer-3-mountains-vineyards-trimbakeshwar.png"
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-cover object-bottom"
-            style={{ opacity: 0.7 }}
-          />
-          {/* Soft top edge blend */}
-          <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-20"
-            style={{
-              background:
-                "linear-gradient(to bottom, rgba(5,8,16,0.6), transparent)",
-            }}
-          />
-        </div>
-
-        {/* Layer 2 — Ghats & Godavari: bottom 55% */}
-        <div
-          ref={(el) => { layerRefs.current[2] = el; }}
-          className="absolute inset-x-0 bottom-0 will-change-transform"
-          style={{ zIndex: 3, height: "55%" }}
-        >
-          <img
-            src="/fotter/layer-2-panchvati-ghats-godavari.png"
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-cover object-bottom"
-          />
-          {/* Soft top edge blend */}
-          <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-16"
-            style={{
-              background:
-                "linear-gradient(to bottom, rgba(5,8,16,0.5), transparent)",
-            }}
-          />
-        </div>
-
-        {/* Layer 1 — Foreground foliage: bottom 28% */}
-        <div
-          ref={(el) => { layerRefs.current[3] = el; }}
-          className="absolute inset-x-0 bottom-0 will-change-transform"
-          style={{ zIndex: 4, height: "28%" }}
-        >
-          <img
-            src="/fotter/layer-1-foreground-grapevines.png"
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-cover object-bottom"
-          />
-        </div>
-
-        {/* Ambient cyan glow behind mountains */}
-        <div
-          className="pointer-events-none absolute inset-x-0"
-          style={{
-            zIndex: 2,
-            top: "25%",
-            height: "40%",
-            background:
-              "radial-gradient(ellipse 70% 50% at 50% 60%, rgba(34,211,238,0.05) 0%, transparent 70%)",
-          }}
-        />
-
-        {/* Warm glow near riverfront */}
-        <div
-          className="pointer-events-none absolute inset-x-0"
-          style={{
-            zIndex: 3,
-            bottom: "15%",
-            height: "30%",
-            background:
-              "radial-gradient(ellipse 50% 40% at 50% 60%, rgba(250,204,21,0.03) 0%, transparent 70%)",
-          }}
-        />
-
-        {/* Bottom darken for copyright bar */}
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-12"
-          style={{
-            zIndex: 6,
-            background:
-              "linear-gradient(to bottom, transparent, rgba(3,5,8,0.7))",
-          }}
-        />
-      </div>
-
-      {/* ═══ ZONE C — Bottom Bar ═══ */}
-      <div
-        className="relative z-20 border-t border-white/[0.06]"
-        style={{ backgroundColor: "rgba(4,6,12,0.92)" }}
-      >
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-1.5 px-4 py-3.5 text-[11px] text-brand-muted/60 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-1.5 px-4 py-3 text-[11px] text-brand-muted/60 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
           <p>&copy; {new Date().getFullYear()} Hustlers Hive. All rights reserved.</p>
           <p className="text-center">
             Built by students. For students. Run by students.
           </p>
           <p>
             Handcrafted with{" "}
-            <span className="text-red-400" aria-label="love">
-              &#9829;
-            </span>{" "}
+            <span className="text-red-400" aria-label="love">&#9829;</span>{" "}
             by{" "}
             <a
               href="https://nitinverse.me"

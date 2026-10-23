@@ -29,8 +29,8 @@ export const metadata: Metadata = {
     "technology workshops for students",
   ],
   icons: {
-    icon: "/logo/logo-dark.png",
-    apple: "/logo/logo-dark.png",
+    icon: "/logo/Hustlers Hive (3).png",
+    apple: "/logo/Hustlers Hive (3).png",
   },
   openGraph: {
     type: "website",

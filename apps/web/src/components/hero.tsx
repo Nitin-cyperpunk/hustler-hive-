@@ -111,10 +111,10 @@ export function HeroSection() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
-                href="/events"
+                href="#whats-next"
                 className="inline-flex items-center justify-center gap-2 rounded-lg border border-brand-border px-6 py-3 text-sm font-semibold text-brand-text transition-colors hover:border-brand-cyan/40 hover:text-brand-cyan"
               >
-                Explore Events
+                Explore What&apos;s Next
               </Link>
             </div>
 

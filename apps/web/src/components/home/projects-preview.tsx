@@ -13,14 +13,21 @@ export function ProjectsPreview({ projects }: { projects: Project[] }) {
         <div className="flex items-end justify-between">
           <div>
             <ScrollReveal>
-              <p className="text-sm font-semibold uppercase tracking-widest text-brand-cyan">
-                Projects
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-cyan">
+                From Learning to Shipping
               </p>
             </ScrollReveal>
             <ScrollReveal delay={0.1}>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-                Built by the community
+              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+                Your next project could{" "}
+                <span className="text-brand-yellow">start here.</span>
               </h2>
+            </ScrollReveal>
+            <ScrollReveal delay={0.15}>
+              <p className="mt-3 max-w-lg text-brand-muted">
+                We&apos;re making space for students to experiment, collaborate
+                on open source, and showcase the things they build.
+              </p>
             </ScrollReveal>
           </div>
           <ScrollReveal delay={0.15}>
@@ -36,11 +43,23 @@ export function ProjectsPreview({ projects }: { projects: Project[] }) {
 
         {projects.length === 0 ? (
           <ScrollReveal delay={0.2}>
-            <div className="mt-12 rounded-xl border border-dashed border-brand-border p-12 text-center">
-              <FolderGit2 className="mx-auto h-10 w-10 text-brand-muted/40" />
-              <p className="mt-3 text-brand-muted">
-                Projects coming soon. Stay tuned!
+            <div className="mt-12 rounded-2xl border border-brand-border bg-brand-surface/30 p-10 text-center sm:p-14">
+              <FolderGit2 className="mx-auto h-10 w-10 text-brand-cyan/30" />
+              <h3 className="mt-4 text-lg font-semibold">
+                Your next project could start here.
+              </h3>
+              <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-brand-muted">
+                We&apos;re making space for students to experiment, collaborate
+                on open source, and showcase the things they build.
               </p>
+              <div className="mt-6">
+                <Link
+                  href="/community"
+                  className="inline-flex items-center gap-2 rounded-lg border border-brand-border px-5 py-2.5 text-sm font-semibold text-brand-text transition-colors hover:border-brand-cyan/40 hover:text-brand-cyan"
+                >
+                  Join the Community
+                </Link>
+              </div>
             </div>
           </ScrollReveal>
         ) : (
