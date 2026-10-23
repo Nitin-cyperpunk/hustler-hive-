@@ -122,15 +122,15 @@ body {
 @utility slide-in-from-right {
   --tw-enter-translate-x: 100%;
 }
-@utility slide-in-from-left-1\/2 {
+@utility slide-in-from-left-half {
   --tw-enter-translate-x: -50%;
 }
-@utility slide-out-to-left-1\/2 {
+@utility slide-out-to-left-half {
   --tw-exit-translate-x: -50%;
 }
-@utility slide-in-from-top-\[48\%\] {
+@utility slide-in-from-top-48pct {
   --tw-enter-translate-y: -48%;
 }
-@utility slide-out-to-top-\[48\%\] {
+@utility slide-out-to-top-48pct {
   --tw-exit-translate-y: -48%;
 }

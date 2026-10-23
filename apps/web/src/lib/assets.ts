@@ -15,6 +15,9 @@ export const TEXTURES = {
 export const BRAND = {
   monogram: "/images/brand/hh-monogram.svg",
   wordmark: "/images/brand/wordmark.svg",
+  logoFull: "/logo/logo-full.png",
+  logoDark: "/logo/logo-dark.png",
+  logoLight: "/logo/logo-light.png",
 } as const;
 
 export const ILLUSTRATIONS = {

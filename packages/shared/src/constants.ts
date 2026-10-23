@@ -10,6 +10,10 @@ export const COMMUNITY: CommunityInfo = {
 
 export const NAV_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
-  { label: "Events", href: "/events" },
   { label: "About", href: "/about" },
+  { label: "Events", href: "/events" },
+  { label: "Projects", href: "/projects" },
+  { label: "Community", href: "/community" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
 ];
