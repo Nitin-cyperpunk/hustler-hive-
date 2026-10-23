@@ -12,7 +12,6 @@ export async function login(formData: FormData) {
   }
 
   const supabase = await createServerSupabaseClient();
-
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {

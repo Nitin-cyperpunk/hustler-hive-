@@ -1,9 +1,15 @@
-import { createSupabaseClient } from "@hustlers-hive/shared/supabase/ssr";
-import { getSupabaseUrl, getSupabaseServiceRoleKey } from "@hustlers-hive/shared/supabase/env";
+import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@hustlers-hive/shared";
 
 export function createServiceRoleClient() {
-  return createSupabaseClient<Database>(getSupabaseUrl(), getSupabaseServiceRoleKey(), {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !key) {
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.");
+  }
+
+  return createClient<Database>(url, key, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }

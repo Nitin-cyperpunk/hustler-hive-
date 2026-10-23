@@ -1,13 +1,23 @@
-import { createServerClient } from "@hustlers-hive/shared/supabase/ssr";
-import { SupabaseClient } from "@hustlers-hive/shared/supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
-import { getSupabaseUrl, getSupabaseAnonKey } from "@hustlers-hive/shared/supabase/env";
 import type { Database } from "@hustlers-hive/shared";
 
 export async function createServerSupabaseClient(): Promise<SupabaseClient<Database>> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable."
+    );
+  }
+
   const cookieStore = await cookies();
 
-  return createServerClient<Database>(getSupabaseUrl(), getSupabaseAnonKey(), {
+  return createServerClient<Database>(supabaseUrl, supabaseKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
