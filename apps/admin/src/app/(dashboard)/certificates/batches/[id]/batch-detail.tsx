@@ -31,7 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Ban, RotateCcw, ExternalLink } from "lucide-react";
+import { ArrowLeft, Ban, RotateCcw, ExternalLink, Download } from "lucide-react";
 
 interface Certificate {
   id: string;
@@ -40,6 +40,8 @@ interface Certificate {
   recipient_name: string;
   recipient_email: string | null;
   status: string;
+  file_storage_path: string | null;
+  downloadUrl: string | null;
   issued_at: string;
   revoked_at: string | null;
   revocation_reason: string | null;
@@ -205,15 +207,28 @@ export function BatchDetail({
                     )}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">
-                    <a
-                      href={`${VERIFY_BASE}/${cert.verification_token}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-brand-cyan hover:underline"
-                    >
-                      Verify
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
+                    <div className="flex items-center gap-2">
+                      {cert.downloadUrl && (
+                        <a
+                          href={cert.downloadUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-brand-muted hover:text-brand-text"
+                        >
+                          <Download className="h-3 w-3" />
+                          PDF
+                        </a>
+                      )}
+                      <a
+                        href={`${VERIFY_BASE}/${cert.verification_token}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-brand-cyan hover:underline"
+                      >
+                        Verify
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
                   </TableCell>
                   {canRevoke && (
                     <TableCell className="text-right">

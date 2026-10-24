@@ -2,13 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requirePermission } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 
 export async function revokeCertificate(
   certificateId: string,
   reason: string
 ) {
-  const session = await requirePermission("certificates.revoke");
+  const session = await requireAdmin("super_admin");
   const supabase = await createServerSupabaseClient();
 
   const { data: cert } = await supabase
@@ -49,7 +49,7 @@ export async function revokeCertificate(
 }
 
 export async function reinstateCertificate(certificateId: string) {
-  const session = await requirePermission("certificates.revoke");
+  const session = await requireAdmin("super_admin");
   const supabase = await createServerSupabaseClient();
 
   const { data: cert } = await supabase

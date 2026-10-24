@@ -3,10 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requirePermission } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 
 export async function createTemplate(formData: FormData) {
-  const session = await requirePermission("certificates.manage");
+  const session = await requireAdmin("super_admin");
   const supabase = await createServerSupabaseClient();
 
   const name = formData.get("name") as string;
@@ -57,7 +57,7 @@ export async function createTemplate(formData: FormData) {
       canvas_width: canvasWidth,
       canvas_height: canvasHeight,
       design_config: designConfig,
-      status,
+      status: status as "draft" | "active" | "archived",
       created_by: session.userId,
     });
 
@@ -78,7 +78,7 @@ export async function createTemplate(formData: FormData) {
 }
 
 export async function updateTemplate(id: string, formData: FormData) {
-  const session = await requirePermission("certificates.manage");
+  const session = await requireAdmin("super_admin");
   const supabase = await createServerSupabaseClient();
 
   const name = formData.get("name") as string;
@@ -91,15 +91,7 @@ export async function updateTemplate(id: string, formData: FormData) {
     throw new Error("Name, width, and height are required");
   }
 
-  const updates: Record<string, unknown> = {
-    name,
-    description,
-    canvas_width: canvasWidth,
-    canvas_height: canvasHeight,
-    status,
-    updated_at: new Date().toISOString(),
-  };
-
+  let backgroundStoragePath: string | undefined;
   const file = formData.get("background") as File | null;
   if (file && file.size > 0) {
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "png";
@@ -116,13 +108,14 @@ export async function updateTemplate(id: string, formData: FormData) {
       throw new Error(`Upload failed: ${uploadError.message}`);
     }
 
-    updates.background_storage_path = storagePath;
+    backgroundStoragePath = storagePath;
   }
 
+  let designConfig: Record<string, unknown> | undefined;
   const designConfigRaw = formData.get("design_config") as string;
   if (designConfigRaw) {
     try {
-      updates.design_config = JSON.parse(designConfigRaw);
+      designConfig = JSON.parse(designConfigRaw);
     } catch {
       // keep existing config
     }
@@ -130,7 +123,16 @@ export async function updateTemplate(id: string, formData: FormData) {
 
   const { error: updateError } = await supabase
     .from("certificate_templates")
-    .update(updates)
+    .update({
+      name,
+      description,
+      canvas_width: canvasWidth,
+      canvas_height: canvasHeight,
+      status: status as "draft" | "active" | "archived",
+      updated_at: new Date().toISOString(),
+      ...(backgroundStoragePath ? { background_storage_path: backgroundStoragePath } : {}),
+      ...(designConfig ? { design_config: designConfig as unknown as import("@hustlers-hive/shared/database.types").Json } : {}),
+    })
     .eq("id", id);
 
   if (updateError) {
@@ -151,7 +153,7 @@ export async function updateTemplate(id: string, formData: FormData) {
 }
 
 export async function deleteTemplate(id: string) {
-  const session = await requirePermission("certificates.manage");
+  const session = await requireAdmin("super_admin");
   const supabase = await createServerSupabaseClient();
 
   const { data: batches } = await supabase

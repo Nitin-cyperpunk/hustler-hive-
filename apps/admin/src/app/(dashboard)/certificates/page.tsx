@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requirePermission } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { Plus, Award, LayoutTemplate, FileStack } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 
 export default async function CertificatesPage() {
-  await requirePermission("certificates.view");
+  await requireAdmin("core_team");
   const supabase = await createServerSupabaseClient();
 
   const [templatesRes, batchesRes, certsRes] = await Promise.all([

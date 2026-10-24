@@ -306,7 +306,7 @@ export function TemplateForm({
                     onChange={(e) =>
                       setDesignConfig((prev) => ({
                         ...prev,
-                        qrCode: { ...((prev as Record<string, Record<string, unknown>>).qrCode ?? {}), x: parseFloat(e.target.value) },
+                        qrCode: { ...prev.qrCode, x: parseFloat(e.target.value) },
                       }))
                     }
                   />
@@ -322,7 +322,7 @@ export function TemplateForm({
                     onChange={(e) =>
                       setDesignConfig((prev) => ({
                         ...prev,
-                        qrCode: { ...((prev as Record<string, Record<string, unknown>>).qrCode ?? {}), y: parseFloat(e.target.value) },
+                        qrCode: { ...prev.qrCode, y: parseFloat(e.target.value) },
                       }))
                     }
                   />
@@ -338,7 +338,7 @@ export function TemplateForm({
                   onChange={(e) =>
                     setDesignConfig((prev) => ({
                       ...prev,
-                      qrCode: { ...((prev as Record<string, Record<string, unknown>>).qrCode ?? {}), size: parseInt(e.target.value) },
+                      qrCode: { ...prev.qrCode, size: parseInt(e.target.value) },
                     }))
                   }
                 />

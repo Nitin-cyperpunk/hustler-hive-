@@ -1,9 +1,9 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requirePermission } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { IssueForm } from "./issue-form";
 
 export default async function IssueCertificatesPage() {
-  await requirePermission("certificates.issue");
+  await requireAdmin("core_team");
   const supabase = await createServerSupabaseClient();
 
   const { data: templates } = await supabase

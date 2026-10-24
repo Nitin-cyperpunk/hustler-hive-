@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requirePermission } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { Plus, LayoutTemplate } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table";
 
 export default async function TemplatesPage() {
-  await requirePermission("certificates.view");
+  await requireAdmin("core_team");
   const supabase = await createServerSupabaseClient();
 
   const { data: templates } = await supabase

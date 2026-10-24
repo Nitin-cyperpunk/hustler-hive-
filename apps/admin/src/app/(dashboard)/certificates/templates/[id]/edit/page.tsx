@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { requirePermission } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { TemplateForm } from "../../template-form";
 
 export default async function EditTemplatePage({
@@ -8,7 +8,7 @@ export default async function EditTemplatePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requirePermission("certificates.manage");
+  await requireAdmin("super_admin");
   const { id } = await params;
   const supabase = await createServerSupabaseClient();
 

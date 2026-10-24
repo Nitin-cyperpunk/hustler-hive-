@@ -455,6 +455,208 @@ export type Database = {
           },
         ];
       };
+      certificate_templates: {
+        Row: {
+          id: string;
+          name: string;
+          description: string | null;
+          background_storage_path: string;
+          canvas_width: number;
+          canvas_height: number;
+          design_config: Json;
+          status: "draft" | "active" | "archived";
+          created_by: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          description?: string | null;
+          background_storage_path: string;
+          canvas_width: number;
+          canvas_height: number;
+          design_config?: Json;
+          status?: "draft" | "active" | "archived";
+          created_by: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          description?: string | null;
+          background_storage_path?: string;
+          canvas_width?: number;
+          canvas_height?: number;
+          design_config?: Json;
+          status?: "draft" | "active" | "archived";
+          created_by?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "certificate_templates_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      certificate_batches: {
+        Row: {
+          id: string;
+          name: string;
+          template_id: string;
+          certificate_title: string;
+          event_name: string | null;
+          issued_by: string;
+          status: "pending" | "processing" | "completed" | "failed";
+          total_count: number;
+          success_count: number;
+          failure_count: number;
+          created_at: string;
+          completed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          template_id: string;
+          certificate_title: string;
+          event_name?: string | null;
+          issued_by: string;
+          status?: "pending" | "processing" | "completed" | "failed";
+          total_count?: number;
+          success_count?: number;
+          failure_count?: number;
+          created_at?: string;
+          completed_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          template_id?: string;
+          certificate_title?: string;
+          event_name?: string | null;
+          issued_by?: string;
+          status?: "pending" | "processing" | "completed" | "failed";
+          total_count?: number;
+          success_count?: number;
+          failure_count?: number;
+          created_at?: string;
+          completed_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "certificate_batches_template_id_fkey";
+            columns: ["template_id"];
+            isOneToOne: false;
+            referencedRelation: "certificate_templates";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "certificate_batches_issued_by_fkey";
+            columns: ["issued_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      certificates: {
+        Row: {
+          id: string;
+          certificate_number: string;
+          verification_token: string;
+          batch_id: string;
+          template_id: string;
+          recipient_name: string;
+          recipient_email: string | null;
+          certificate_title: string;
+          event_name: string | null;
+          issued_at: string;
+          issued_by: string;
+          status: "valid" | "revoked";
+          file_storage_path: string | null;
+          revoked_at: string | null;
+          revoked_by: string | null;
+          revocation_reason: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          certificate_number: string;
+          verification_token: string;
+          batch_id: string;
+          template_id: string;
+          recipient_name: string;
+          recipient_email?: string | null;
+          certificate_title: string;
+          event_name?: string | null;
+          issued_at?: string;
+          issued_by: string;
+          status?: "valid" | "revoked";
+          file_storage_path?: string | null;
+          revoked_at?: string | null;
+          revoked_by?: string | null;
+          revocation_reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          certificate_number?: string;
+          verification_token?: string;
+          batch_id?: string;
+          template_id?: string;
+          recipient_name?: string;
+          recipient_email?: string | null;
+          certificate_title?: string;
+          event_name?: string | null;
+          issued_at?: string;
+          issued_by?: string;
+          status?: "valid" | "revoked";
+          file_storage_path?: string | null;
+          revoked_at?: string | null;
+          revoked_by?: string | null;
+          revocation_reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "certificates_batch_id_fkey";
+            columns: ["batch_id"];
+            isOneToOne: false;
+            referencedRelation: "certificate_batches";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "certificates_template_id_fkey";
+            columns: ["template_id"];
+            isOneToOne: false;
+            referencedRelation: "certificate_templates";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "certificates_issued_by_fkey";
+            columns: ["issued_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "certificates_revoked_by_fkey";
+            columns: ["revoked_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -465,6 +667,17 @@ export type Database = {
       has_permission: {
         Args: { required_permission: string };
         Returns: boolean;
+      };
+      verify_certificate: {
+        Args: { token: string };
+        Returns: {
+          certificate_number: string;
+          recipient_name: string;
+          certificate_title: string;
+          event_name: string | null;
+          issued_at: string;
+          status: string;
+        }[];
       };
     };
     Enums: Record<string, never>;
