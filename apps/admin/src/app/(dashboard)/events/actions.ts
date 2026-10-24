@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth";
+import { writeAuditLog } from "@/lib/audit";
 
 function slugify(text: string): string {
   return text
@@ -52,12 +53,18 @@ export async function createEvent(formData: FormData) {
     return { error: error.message };
   }
 
+  await writeAuditLog(session.userId, {
+    action: "event.create",
+    targetType: "event",
+    metadata: { title, status },
+  });
+
   revalidatePath("/events");
   redirect("/events");
 }
 
 export async function updateEvent(id: string, formData: FormData) {
-  await requirePermission("events.update");
+  const session = await requirePermission("events.update");
   const supabase = await createServerSupabaseClient();
 
   const title = (formData.get("title") as string)?.trim();
@@ -110,17 +117,30 @@ export async function updateEvent(id: string, formData: FormData) {
     return { error: error.message };
   }
 
+  await writeAuditLog(session.userId, {
+    action: "event.update",
+    targetType: "event",
+    targetId: id,
+    metadata: { title, status },
+  });
+
   revalidatePath("/events");
   redirect("/events");
 }
 
 export async function deleteEvent(id: string) {
-  await requirePermission("events.delete");
+  const session = await requirePermission("events.delete");
   const supabase = await createServerSupabaseClient();
 
   const { error } = await supabase.from("events").delete().eq("id", id);
 
   if (error) return { error: error.message };
+
+  await writeAuditLog(session.userId, {
+    action: "event.delete",
+    targetType: "event",
+    targetId: id,
+  });
 
   revalidatePath("/events");
   redirect("/events");

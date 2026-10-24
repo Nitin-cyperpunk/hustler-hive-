@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { writeAuditLog } from "@/lib/audit";
 
 export async function login(formData: FormData) {
   const email = formData.get("email") as string;
@@ -39,6 +40,11 @@ export async function login(formData: FormData) {
     await supabase.auth.signOut();
     return { error: "Your account has been deactivated. Contact a Super Admin." };
   }
+
+  await writeAuditLog(user.id, {
+    action: "auth.login",
+    metadata: { role: adminUser.role },
+  });
 
   redirect("/");
 }

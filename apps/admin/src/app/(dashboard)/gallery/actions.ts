@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth";
+import { writeAuditLog } from "@/lib/audit";
 
 export async function uploadGalleryImage(storagePath: string) {
   const session = await requirePermission("gallery.submit");
@@ -16,11 +17,17 @@ export async function uploadGalleryImage(storagePath: string) {
 
   if (error) return { error: error.message };
 
+  await writeAuditLog(session.userId, {
+    action: "gallery.upload",
+    targetType: "gallery_image",
+    metadata: { storage_path: storagePath },
+  });
+
   revalidatePath("/gallery");
 }
 
 export async function updateGalleryImage(id: string, formData: FormData) {
-  await requirePermission("gallery.publish");
+  const session = await requirePermission("gallery.publish");
   const supabase = await createServerSupabaseClient();
 
   const altText = (formData.get("alt_text") as string)?.trim() || null;
@@ -35,16 +42,29 @@ export async function updateGalleryImage(id: string, formData: FormData) {
 
   if (error) return { error: error.message };
 
+  await writeAuditLog(session.userId, {
+    action: "gallery.update",
+    targetType: "gallery_image",
+    targetId: id,
+    metadata: { status },
+  });
+
   revalidatePath("/gallery");
 }
 
 export async function deleteGalleryImage(id: string) {
-  await requirePermission("gallery.delete");
+  const session = await requirePermission("gallery.delete");
   const supabase = await createServerSupabaseClient();
 
   const { error } = await supabase.from("gallery_images").delete().eq("id", id);
 
   if (error) return { error: error.message };
+
+  await writeAuditLog(session.userId, {
+    action: "gallery.delete",
+    targetType: "gallery_image",
+    targetId: id,
+  });
 
   revalidatePath("/gallery");
 }

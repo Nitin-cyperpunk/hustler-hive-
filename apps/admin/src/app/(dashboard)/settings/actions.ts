@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth";
+import { writeAuditLog } from "@/lib/audit";
 
 export async function updateSettings(formData: FormData) {
   const session = await requirePermission("settings.manage");
@@ -30,6 +31,11 @@ export async function updateSettings(formData: FormData) {
     .eq("id", 1);
 
   if (error) return { error: error.message };
+
+  await writeAuditLog(session.userId, {
+    action: "settings.update",
+    targetType: "site_settings",
+  });
 
   revalidatePath("/settings");
   return { success: true };

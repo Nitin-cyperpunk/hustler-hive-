@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth";
+import { writeAuditLog } from "@/lib/audit";
 
 function slugify(text: string): string {
   return text
@@ -50,12 +51,18 @@ export async function createProject(formData: FormData) {
     return { error: error.message };
   }
 
+  await writeAuditLog(session.userId, {
+    action: "project.create",
+    targetType: "project",
+    metadata: { title, status },
+  });
+
   revalidatePath("/projects");
   redirect("/projects");
 }
 
 export async function updateProject(id: string, formData: FormData) {
-  await requirePermission("projects.update");
+  const session = await requirePermission("projects.update");
   const supabase = await createServerSupabaseClient();
 
   const title = (formData.get("title") as string)?.trim();
@@ -102,6 +109,13 @@ export async function updateProject(id: string, formData: FormData) {
     if (error.code === "23505") return { error: "A project with this slug already exists." };
     return { error: error.message };
   }
+
+  await writeAuditLog(session.userId, {
+    action: "project.update",
+    targetType: "project",
+    targetId: id,
+    metadata: { title, status },
+  });
 
   revalidatePath("/projects");
   redirect("/projects");
