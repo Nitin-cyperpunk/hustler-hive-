@@ -21,7 +21,10 @@ export default async function ProjectsPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-lg font-bold text-brand-text">Projects</h1>
+        <div>
+          <h1 className="text-lg font-bold text-brand-text">Projects</h1>
+          <p className="text-sm text-brand-muted">Manage community and open-source projects</p>
+        </div>
         <Button asChild>
           <Link href="/projects/new">
             <Plus className="h-4 w-4" />

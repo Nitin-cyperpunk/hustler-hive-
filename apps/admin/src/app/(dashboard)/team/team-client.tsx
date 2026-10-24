@@ -222,7 +222,7 @@ export function TeamClient({
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Team Management</h2>
+          <h1 className="text-lg font-bold text-brand-text">Team Management</h1>
           <p className="text-sm text-brand-muted">
             Manage team members, roles, and invitations.
           </p>

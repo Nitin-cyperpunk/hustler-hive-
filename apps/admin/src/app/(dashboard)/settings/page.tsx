@@ -17,8 +17,8 @@ export default async function SettingsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-lg font-bold text-white">Site Settings</h1>
-        <p className="text-sm text-gray-500">Configure public website content</p>
+        <h1 className="text-lg font-bold text-brand-text">Site Settings</h1>
+        <p className="text-sm text-brand-muted">Configure public website content</p>
       </div>
 
       <SettingsForm content={content} />

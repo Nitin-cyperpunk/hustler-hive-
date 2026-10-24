@@ -3,8 +3,33 @@
 import { useState } from "react";
 import { Upload, Trash2, Loader2 } from "lucide-react";
 import { createClient } from "@hustlers-hive/shared/supabase/client";
-import { StatusBadge } from "@/components/status-badge";
-import { uploadGalleryImage, deleteGalleryImage, updateGalleryImage } from "@/app/(dashboard)/gallery/actions";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  uploadGalleryImage,
+  deleteGalleryImage,
+  updateGalleryImage,
+} from "@/app/(dashboard)/gallery/actions";
 
 interface GalleryImage {
   id: string;
@@ -72,14 +97,28 @@ export function GalleryManager({
   }
 
   return (
-    <div className="mt-6 space-y-4">
-      <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-white/10 bg-white/[0.02] px-4 py-6 text-sm text-gray-500 transition-colors hover:border-cyan-400/30">
-        {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Upload className="h-5 w-5" />}
-        {uploading ? "Uploading…" : "Click to upload a gallery image"}
-        <input type="file" accept="image/*" className="hidden" onChange={handleUpload} disabled={uploading} />
+    <div className="space-y-4">
+      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-brand-border bg-brand-surface/30 px-4 py-8 text-sm text-brand-muted transition-colors hover:border-brand-cyan/30 hover:text-brand-text">
+        {uploading ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : (
+          <Upload className="h-5 w-5" />
+        )}
+        {uploading ? "Uploading..." : "Click to upload a gallery image"}
+        <input
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleUpload}
+          disabled={uploading}
+        />
       </label>
 
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && (
+        <div className="rounded-lg border border-brand-error/20 bg-brand-error/5 px-3 py-2.5 text-sm text-brand-error">
+          {error}
+        </div>
+      )}
 
       {initialImages.length > 0 && (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -100,72 +139,126 @@ function GalleryCard({
   events: { id: string; title: string }[];
 }) {
   const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
-    <div className="rounded-xl border border-white/5 bg-[#0D1422] p-3">
-      <div className="mb-2 flex items-center justify-between">
-        <StatusBadge status={image.status} />
+    <Card>
+      <CardContent className="space-y-3 pt-4">
+        <div className="flex items-center justify-between">
+          <Badge
+            variant={image.status === "published" ? "published" : "draft"}
+          >
+            {image.status}
+          </Badge>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 text-brand-muted hover:text-brand-error"
+            onClick={() => setConfirmDelete(true)}
+            disabled={deleting}
+          >
+            {deleting ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Trash2 className="h-3.5 w-3.5" />
+            )}
+            <span className="sr-only">Delete image</span>
+          </Button>
+        </div>
+
+        <p className="truncate text-xs text-brand-muted">
+          {image.storage_path}
+        </p>
+
         <form
-          action={async () => {
-            setDeleting(true);
-            await deleteGalleryImage(image.id);
+          className="space-y-2"
+          action={async (formData: FormData) => {
+            await updateGalleryImage(image.id, formData);
           }}
         >
-          <button
-            type="submit"
-            disabled={deleting}
-            className="rounded p-1 text-gray-500 hover:bg-red-500/10 hover:text-red-400"
-          >
-            {deleting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-          </button>
+          <div className="space-y-1">
+            <Label htmlFor={`alt-${image.id}`} className="text-xs">
+              Alt text
+            </Label>
+            <Input
+              id={`alt-${image.id}`}
+              name="alt_text"
+              defaultValue={image.alt_text ?? ""}
+              placeholder="Describe the image"
+              className="h-8 text-xs"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor={`caption-${image.id}`} className="text-xs">
+              Caption
+            </Label>
+            <Input
+              id={`caption-${image.id}`}
+              name="caption"
+              defaultValue={image.caption ?? ""}
+              placeholder="Optional caption"
+              className="h-8 text-xs"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1">
+              <Label className="text-xs">Status</Label>
+              <Select name="status" defaultValue={image.status}>
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="published">Published</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Event</Label>
+              <Select name="event_id" defaultValue={image.event_id ?? ""}>
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue placeholder="No event" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">No event</SelectItem>
+                  {events.map((ev) => (
+                    <SelectItem key={ev.id} value={ev.id}>
+                      {ev.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <Button type="submit" variant="secondary" size="sm" className="w-full">
+            Save
+          </Button>
         </form>
-      </div>
+      </CardContent>
 
-      <p className="truncate text-xs text-gray-500">{image.storage_path}</p>
-
-      <form
-        className="mt-2 space-y-2"
-        action={async (formData: FormData) => {
-          await updateGalleryImage(image.id, formData);
-        }}
-      >
-        <input
-          name="alt_text"
-          defaultValue={image.alt_text ?? ""}
-          placeholder="Alt text"
-          className="w-full rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder-gray-600"
-        />
-        <input
-          name="caption"
-          defaultValue={image.caption ?? ""}
-          placeholder="Caption"
-          className="w-full rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder-gray-600"
-        />
-        <select
-          name="status"
-          defaultValue={image.status}
-          className="w-full rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white"
-        >
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-        </select>
-        <select
-          name="event_id"
-          defaultValue={image.event_id ?? ""}
-          className="w-full rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white"
-        >
-          <option value="">No event</option>
-          {events.map((ev) => (
-            <option key={ev.id} value={ev.id}>{ev.title}</option>
-          ))}
-        </select>
-        <button
-          type="submit"
-          className="rounded bg-white/5 px-2 py-1 text-xs text-gray-400 hover:bg-white/10 hover:text-white"
-        >
-          Save
-        </button>
-      </form>
-    </div>
+      <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete image?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently remove the image from the gallery. This
+              action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-brand-error hover:bg-brand-error/90"
+              onClick={async () => {
+                setDeleting(true);
+                await deleteGalleryImage(image.id);
+              }}
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Card>
   );
 }

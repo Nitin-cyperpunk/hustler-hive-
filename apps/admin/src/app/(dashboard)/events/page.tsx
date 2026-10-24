@@ -21,7 +21,10 @@ export default async function EventsPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-lg font-bold text-brand-text">Events</h1>
+        <div>
+          <h1 className="text-lg font-bold text-brand-text">Events</h1>
+          <p className="text-sm text-brand-muted">Manage community events, meetups, and workshops</p>
+        </div>
         <Button asChild>
           <Link href="/events/new">
             <Plus className="h-4 w-4" />

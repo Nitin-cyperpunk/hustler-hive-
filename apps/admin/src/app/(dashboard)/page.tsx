@@ -1,7 +1,20 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/auth";
-import { Calendar, FolderKanban, Images, FileText } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Calendar,
+  FolderKanban,
+  Images,
+  FileText,
+  TrendingUp,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default async function DashboardPage() {
   const session = await requireAdmin();
@@ -21,25 +34,61 @@ export default async function DashboardPage() {
   ).length;
 
   const projects = projectsRes.data ?? [];
-  const publishedProjects = projects.filter((p) => p.status === "published").length;
+  const publishedProjects = projects.filter(
+    (p) => p.status === "published"
+  ).length;
 
   const gallery = galleryRes.data ?? [];
-  const publishedGallery = gallery.filter((g) => g.status === "published").length;
+  const publishedGallery = gallery.filter(
+    (g) => g.status === "published"
+  ).length;
 
   const stats = [
-    { label: "Published Events", value: publishedEvents, icon: Calendar, color: "text-brand-cyan" },
-    { label: "Upcoming Events", value: upcomingEvents, icon: Calendar, color: "text-brand-success" },
-    { label: "Draft Events", value: draftEvents, icon: FileText, color: "text-brand-yellow" },
-    { label: "Published Projects", value: publishedProjects, icon: FolderKanban, color: "text-brand-cyan" },
-    { label: "Gallery Images", value: publishedGallery, icon: Images, color: "text-purple-400" },
+    {
+      label: "Published Events",
+      value: publishedEvents,
+      icon: Calendar,
+      color: "text-brand-cyan",
+    },
+    {
+      label: "Upcoming",
+      value: upcomingEvents,
+      icon: TrendingUp,
+      color: "text-brand-success",
+    },
+    {
+      label: "Drafts",
+      value: draftEvents,
+      icon: FileText,
+      color: "text-brand-yellow",
+    },
+    {
+      label: "Projects",
+      value: publishedProjects,
+      icon: FolderKanban,
+      color: "text-brand-cyan",
+    },
+    {
+      label: "Gallery",
+      value: publishedGallery,
+      icon: Images,
+      color: "text-purple-400",
+    },
   ];
 
+  const totalContent = events.length + projects.length + gallery.length;
+
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-lg font-bold text-brand-text">Welcome back</h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-lg font-bold text-brand-text">
+          Welcome back
+        </h1>
         <p className="text-sm text-brand-muted">
-          Signed in as {session.email} ({session.role.replace("_", " ")})
+          Signed in as {session.email}{" "}
+          <Badge variant="secondary" className="ml-1 capitalize">
+            {session.role.replace("_", " ")}
+          </Badge>
         </p>
       </div>
 
@@ -53,18 +102,21 @@ export default async function DashboardPage() {
               <stat.icon className={`h-4 w-4 ${stat.color}`} />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-brand-text">{stat.value}</div>
+              <div className="text-2xl font-bold text-brand-text">
+                {stat.value}
+              </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {events.length === 0 && projects.length === 0 && (
-        <Card className="mt-8">
-          <CardContent className="py-8 text-center">
-            <p className="text-sm text-brand-muted">
-              No content yet. Start by creating your first event or project.
-            </p>
+      {totalContent === 0 && (
+        <Card>
+          <CardContent className="py-10 text-center">
+            <CardDescription className="text-sm">
+              No content yet. Start by creating your first event or project
+              from the sidebar.
+            </CardDescription>
           </CardContent>
         </Card>
       )}

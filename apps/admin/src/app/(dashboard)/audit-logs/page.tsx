@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 
 export default async function AuditLogsPage() {
   await requirePermission("audit_logs.view");
@@ -33,13 +34,13 @@ export default async function AuditLogsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Audit Logs</h2>
+        <h1 className="text-lg font-bold text-brand-text">Audit Logs</h1>
         <p className="text-sm text-brand-muted">
           Security-sensitive actions performed by team members.
         </p>
       </div>
 
-      <div className="rounded-lg border border-brand-border">
+      <Card>
         <Table>
           <TableHeader>
             <TableRow>
@@ -87,7 +88,7 @@ export default async function AuditLogsPage() {
             )}
           </TableBody>
         </Table>
-      </div>
+      </Card>
     </div>
   );
 }
