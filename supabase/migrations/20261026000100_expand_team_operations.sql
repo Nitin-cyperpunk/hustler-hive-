@@ -520,6 +520,17 @@ CREATE POLICY receipts_delete ON storage.objects
 -- Remove old core_team permissions (now admin)
 DELETE FROM public.role_permissions WHERE role = 'core_team';
 
+-- Update role_permissions CHECK constraint BEFORE inserting new roles
+ALTER TABLE public.role_permissions
+  DROP CONSTRAINT IF EXISTS role_permissions_role_check;
+
+ALTER TABLE public.role_permissions
+  ADD CONSTRAINT role_permissions_role_check
+  CHECK (role IN (
+    'super_admin', 'admin', 'operations', 'social_media',
+    'creative', 'logistics', 'volunteer', 'member'
+  ));
+
 -- Add all permissions for the expanded role set
 INSERT INTO public.role_permissions (role, permission) VALUES
   -- ========= SUPER ADMIN (everything) =========
@@ -632,17 +643,6 @@ INSERT INTO public.role_permissions (role, permission) VALUES
   ('volunteer', 'budgets.view'),
   ('volunteer', 'expenses.view')
 ON CONFLICT (role, permission) DO NOTHING;
-
--- Also update role_permissions CHECK constraint to include new roles
-ALTER TABLE public.role_permissions
-  DROP CONSTRAINT IF EXISTS role_permissions_role_check;
-
-ALTER TABLE public.role_permissions
-  ADD CONSTRAINT role_permissions_role_check
-  CHECK (role IN (
-    'super_admin', 'admin', 'operations', 'social_media',
-    'creative', 'logistics', 'volunteer', 'member'
-  ));
 
 -- ============================================================
 -- 13. UPDATE RLS ON PROFILES FOR NEW ROLES
