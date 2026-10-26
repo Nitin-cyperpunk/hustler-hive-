@@ -150,7 +150,7 @@ export async function issueBatch(
   batchName: string,
   recipients: Recipient[]
 ): Promise<IssueBatchResult> {
-  const session = await requireAdmin("core_team");
+  const session = await requireAdmin("operations");
   const supabase = await createServerSupabaseClient();
 
   if (!templateId || !certificateTitle || recipients.length === 0) {

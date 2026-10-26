@@ -17,6 +17,11 @@ import {
   Users,
   ScrollText,
   Award,
+  CheckSquare,
+  Megaphone,
+  Palette,
+  Wallet,
+  UserCircle,
 } from "lucide-react";
 import type { AdminSession } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
@@ -41,13 +46,18 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Overview", href: "/" },
+  { icon: UserCircle, label: "My Profile", href: "/profile" },
+  { icon: CheckSquare, label: "Tasks", href: "/tasks", permission: "tasks.view_assigned" },
   { icon: Calendar, label: "Events", href: "/events" },
   { icon: FolderKanban, label: "Projects", href: "/projects" },
+  { icon: Megaphone, label: "Social Media", href: "/social-media", permission: "social.view" },
+  { icon: Palette, label: "Creative Assets", href: "/creative-assets", permission: "creative.view" },
   { icon: Images, label: "Gallery", href: "/gallery" },
-  { icon: Award, label: "Certificates", href: "/certificates", minRole: "core_team" as const },
-  { icon: Users, label: "Team", href: "/team", minRole: "super_admin" as const },
-  { icon: Settings, label: "Settings", href: "/settings", minRole: "core_team" as const },
-  { icon: ScrollText, label: "Audit Logs", href: "/audit-logs", minRole: "super_admin" as const },
+  { icon: Award, label: "Certificates", href: "/certificates", permission: "certificates.view" },
+  { icon: Wallet, label: "Finance", href: "/finance", permission: "budgets.view" },
+  { icon: Users, label: "Team & Access", href: "/team", minRole: "admin" as const },
+  { icon: Settings, label: "Settings", href: "/settings", minRole: "admin" as const },
+  { icon: ScrollText, label: "Audit Logs", href: "/audit-logs", permission: "audit_logs.view" },
 ];
 
 export function AdminShell({
@@ -66,12 +76,21 @@ export function AdminShell({
     return pathname.startsWith(href);
   }
 
-  const roleHierarchy = { member: 0, volunteer: 1, core_team: 2, super_admin: 3 } as const;
-  const userLevel = roleHierarchy[session.role as keyof typeof roleHierarchy] ?? 0;
+  const roleHierarchy: Record<string, number> = {
+    member: 0, volunteer: 1, logistics: 2, creative: 2, social_media: 2,
+    operations: 3, admin: 4, super_admin: 5,
+  };
+  const userLevel = roleHierarchy[session.role] ?? 0;
 
   const visibleItems = navItems.filter((item) => {
-    if (!item.minRole) return true;
-    return userLevel >= (roleHierarchy[item.minRole as keyof typeof roleHierarchy] ?? 0);
+    if ((item as { minRole?: string }).minRole) {
+      const needed = roleHierarchy[(item as { minRole: string }).minRole] ?? 0;
+      if (userLevel < needed) return false;
+    }
+    if ((item as { permission?: string }).permission) {
+      if (!session.permissions.includes((item as { permission: string }).permission)) return false;
+    }
+    return true;
   });
 
   const pageTitle = visibleItems.find((n) => isActive(n.href))?.label ?? "Dashboard";
@@ -143,7 +162,7 @@ export function AdminShell({
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium text-brand-text truncate">{session.email}</p>
-                <p className="text-xs text-brand-muted capitalize">{session.role.replace("_", " ")}</p>
+                <p className="text-xs text-brand-muted capitalize">{session.role.replace(/_/g, " ")}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />

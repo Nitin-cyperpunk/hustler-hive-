@@ -18,7 +18,7 @@ export async function inviteTeamMember(formData: FormData) {
     return { error: "Email, name, and role are required." };
   }
 
-  if (!["core_team", "volunteer", "member"].includes(role)) {
+  if (!["admin", "operations", "social_media", "creative", "logistics", "volunteer", "member"].includes(role)) {
     return { error: "Invalid role." };
   }
 
@@ -61,7 +61,7 @@ export async function inviteTeamMember(formData: FormData) {
     .insert({
       email,
       full_name: fullName,
-      role: role as "core_team" | "volunteer" | "member",
+      role: role as "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member",
       invited_by: session.userId,
     })
     .select("id")
@@ -97,7 +97,7 @@ export async function inviteTeamMember(formData: FormData) {
 
     await adminClient.from("admin_users").upsert({
       user_id: invitedUser.user.id,
-      role: role as "core_team" | "volunteer" | "member",
+      role: role as "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member",
       status: "invited",
     });
 
@@ -157,7 +157,7 @@ export async function changeTeamMemberRole(
   const session = await requirePermission("users.update_role");
   const supabase = await createServerSupabaseClient();
 
-  if (!["core_team", "volunteer", "member"].includes(newRole)) {
+  if (!["admin", "operations", "social_media", "creative", "logistics", "volunteer", "member"].includes(newRole)) {
     return { error: "Invalid role." };
   }
 
@@ -185,7 +185,7 @@ export async function changeTeamMemberRole(
 
   const { error } = await supabase
     .from("admin_users")
-    .update({ role: newRole as "core_team" | "volunteer" | "member" })
+    .update({ role: newRole as "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member" })
     .eq("user_id", targetUserId);
 
   if (error) return { error: error.message };

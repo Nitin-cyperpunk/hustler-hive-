@@ -1,7 +1,17 @@
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export type AdminRole = "super_admin" | "core_team" | "volunteer" | "member";
+export type AdminRole =
+  | "super_admin"
+  | "admin"
+  | "operations"
+  | "social_media"
+  | "creative"
+  | "logistics"
+  | "volunteer"
+  | "member";
+
+export type Department = "operations" | "social_media" | "creative" | "logistics" | "general";
 
 export type AdminStatus = "active" | "invited" | "deactivated";
 
@@ -9,14 +19,24 @@ export interface AdminSession {
   userId: string;
   email: string;
   role: AdminRole;
+  department: Department | null;
   status: AdminStatus;
   permissions: string[];
 }
 
-const ROLE_HIERARCHY: AdminRole[] = ["member", "volunteer", "core_team", "super_admin"];
+const ROLE_LEVELS: Record<AdminRole, number> = {
+  member: 0,
+  volunteer: 1,
+  logistics: 2,
+  creative: 2,
+  social_media: 2,
+  operations: 3,
+  admin: 4,
+  super_admin: 5,
+};
 
 export function roleLevel(role: AdminRole): number {
-  return ROLE_HIERARCHY.indexOf(role);
+  return ROLE_LEVELS[role] ?? 0;
 }
 
 export function hasMinRole(userRole: AdminRole, minRole: AdminRole): boolean {
@@ -34,7 +54,7 @@ export async function requireAdmin(minRole: AdminRole = "volunteer"): Promise<Ad
 
   const { data: adminUser } = await supabase
     .from("admin_users")
-    .select("role, status")
+    .select("role, status, department")
     .eq("user_id", user.id)
     .single();
 
@@ -59,6 +79,7 @@ export async function requireAdmin(minRole: AdminRole = "volunteer"): Promise<Ad
     userId: user.id,
     email: user.email ?? "",
     role,
+    department: (adminUser.department as Department | null) ?? null,
     status: adminUser.status as AdminStatus,
     permissions,
   };

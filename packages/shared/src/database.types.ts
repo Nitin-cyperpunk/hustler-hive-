@@ -23,22 +23,25 @@ export type Database = {
       admin_users: {
         Row: {
           user_id: string;
-          role: "super_admin" | "core_team" | "volunteer" | "member";
+          role: "super_admin" | "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member";
           status: "active" | "invited" | "deactivated";
+          department: "operations" | "social_media" | "creative" | "logistics" | "general" | null;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           user_id: string;
-          role: "super_admin" | "core_team" | "volunteer" | "member";
+          role: "super_admin" | "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member";
           status?: "active" | "invited" | "deactivated";
+          department?: "operations" | "social_media" | "creative" | "logistics" | "general" | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           user_id?: string;
-          role?: "super_admin" | "core_team" | "volunteer" | "member";
+          role?: "super_admin" | "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member";
           status?: "active" | "invited" | "deactivated";
+          department?: "operations" | "social_media" | "creative" | "logistics" | "general" | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -57,6 +60,18 @@ export type Database = {
           user_id: string;
           full_name: string;
           avatar_url: string | null;
+          bio: string | null;
+          college: string | null;
+          branch: string | null;
+          graduation_year: number | null;
+          skills: string[];
+          github_url: string | null;
+          linkedin_url: string | null;
+          instagram_url: string | null;
+          x_url: string | null;
+          portfolio_url: string | null;
+          contact_number: string | null;
+          public_profile: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -64,6 +79,18 @@ export type Database = {
           user_id: string;
           full_name: string;
           avatar_url?: string | null;
+          bio?: string | null;
+          college?: string | null;
+          branch?: string | null;
+          graduation_year?: number | null;
+          skills?: string[];
+          github_url?: string | null;
+          linkedin_url?: string | null;
+          instagram_url?: string | null;
+          x_url?: string | null;
+          portfolio_url?: string | null;
+          contact_number?: string | null;
+          public_profile?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -71,6 +98,18 @@ export type Database = {
           user_id?: string;
           full_name?: string;
           avatar_url?: string | null;
+          bio?: string | null;
+          college?: string | null;
+          branch?: string | null;
+          graduation_year?: number | null;
+          skills?: string[];
+          github_url?: string | null;
+          linkedin_url?: string | null;
+          instagram_url?: string | null;
+          x_url?: string | null;
+          portfolio_url?: string | null;
+          contact_number?: string | null;
+          public_profile?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -86,15 +125,15 @@ export type Database = {
       };
       role_permissions: {
         Row: {
-          role: "super_admin" | "core_team" | "volunteer" | "member";
+          role: "super_admin" | "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member";
           permission: string;
         };
         Insert: {
-          role: "super_admin" | "core_team" | "volunteer" | "member";
+          role: "super_admin" | "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member";
           permission: string;
         };
         Update: {
-          role?: "super_admin" | "core_team" | "volunteer" | "member";
+          role?: "super_admin" | "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member";
           permission?: string;
         };
         Relationships: [];
@@ -103,11 +142,13 @@ export type Database = {
         Row: {
           id: string;
           email: string;
-          role: "core_team" | "volunteer" | "member";
+          role: "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member";
           full_name: string;
           status: "pending" | "accepted" | "expired" | "revoked";
           invited_by: string;
           accepted_by: string | null;
+          department: "operations" | "social_media" | "creative" | "logistics" | "general" | null;
+          notes: string | null;
           expires_at: string;
           created_at: string;
           updated_at: string;
@@ -115,11 +156,13 @@ export type Database = {
         Insert: {
           id?: string;
           email: string;
-          role: "core_team" | "volunteer" | "member";
+          role: "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member";
           full_name: string;
           status?: "pending" | "accepted" | "expired" | "revoked";
           invited_by: string;
           accepted_by?: string | null;
+          department?: "operations" | "social_media" | "creative" | "logistics" | "general" | null;
+          notes?: string | null;
           expires_at?: string;
           created_at?: string;
           updated_at?: string;
@@ -127,11 +170,13 @@ export type Database = {
         Update: {
           id?: string;
           email?: string;
-          role?: "core_team" | "volunteer" | "member";
+          role?: "admin" | "operations" | "social_media" | "creative" | "logistics" | "volunteer" | "member";
           full_name?: string;
           status?: "pending" | "accepted" | "expired" | "revoked";
           invited_by?: string;
           accepted_by?: string | null;
+          department?: "operations" | "social_media" | "creative" | "logistics" | "general" | null;
+          notes?: string | null;
           expires_at?: string;
           created_at?: string;
           updated_at?: string;
@@ -651,6 +696,421 @@ export type Database = {
           {
             foreignKeyName: "certificates_revoked_by_fkey";
             columns: ["revoked_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      tasks: {
+        Row: {
+          id: string;
+          title: string;
+          description: string | null;
+          department: "operations" | "social_media" | "creative" | "logistics" | "general" | null;
+          assigned_to: string | null;
+          created_by: string;
+          priority: "low" | "medium" | "high" | "urgent";
+          status: "todo" | "in_progress" | "blocked" | "in_review" | "completed" | "cancelled";
+          due_date: string | null;
+          event_id: string | null;
+          is_claimable: boolean;
+          evidence: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          description?: string | null;
+          department?: "operations" | "social_media" | "creative" | "logistics" | "general" | null;
+          assigned_to?: string | null;
+          created_by: string;
+          priority?: "low" | "medium" | "high" | "urgent";
+          status?: "todo" | "in_progress" | "blocked" | "in_review" | "completed" | "cancelled";
+          due_date?: string | null;
+          event_id?: string | null;
+          is_claimable?: boolean;
+          evidence?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          description?: string | null;
+          department?: "operations" | "social_media" | "creative" | "logistics" | "general" | null;
+          assigned_to?: string | null;
+          created_by?: string;
+          priority?: "low" | "medium" | "high" | "urgent";
+          status?: "todo" | "in_progress" | "blocked" | "in_review" | "completed" | "cancelled";
+          due_date?: string | null;
+          event_id?: string | null;
+          is_claimable?: boolean;
+          evidence?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "tasks_assigned_to_fkey";
+            columns: ["assigned_to"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "tasks_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "tasks_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      task_comments: {
+        Row: {
+          id: string;
+          task_id: string;
+          author_id: string;
+          content: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          task_id: string;
+          author_id: string;
+          content: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          task_id?: string;
+          author_id?: string;
+          content?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "task_comments_task_id_fkey";
+            columns: ["task_id"];
+            isOneToOne: false;
+            referencedRelation: "tasks";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "task_comments_author_id_fkey";
+            columns: ["author_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      event_budgets: {
+        Row: {
+          id: string;
+          event_id: string;
+          category: string;
+          proposed_amount: number;
+          approved_amount: number | null;
+          spending_limit: number | null;
+          approval_status: "pending" | "approved" | "rejected";
+          approved_by: string | null;
+          notes: string | null;
+          created_by: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          event_id: string;
+          category: string;
+          proposed_amount: number;
+          approved_amount?: number | null;
+          spending_limit?: number | null;
+          approval_status?: "pending" | "approved" | "rejected";
+          approved_by?: string | null;
+          notes?: string | null;
+          created_by: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          event_id?: string;
+          category?: string;
+          proposed_amount?: number;
+          approved_amount?: number | null;
+          spending_limit?: number | null;
+          approval_status?: "pending" | "approved" | "rejected";
+          approved_by?: string | null;
+          notes?: string | null;
+          created_by?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "event_budgets_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "event_budgets_approved_by_fkey";
+            columns: ["approved_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "event_budgets_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      expenses: {
+        Row: {
+          id: string;
+          event_id: string | null;
+          budget_id: string | null;
+          category: string;
+          description: string;
+          amount: number;
+          expense_date: string;
+          vendor: string | null;
+          receipt_storage_path: string | null;
+          payment_method: "cash" | "upi" | "bank_transfer" | "card" | "other" | null;
+          incurred_by: string;
+          submitted_by: string;
+          status: "draft" | "submitted" | "under_review" | "approved" | "rejected" | "reimbursed";
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          review_reason: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          event_id?: string | null;
+          budget_id?: string | null;
+          category: string;
+          description: string;
+          amount: number;
+          expense_date: string;
+          vendor?: string | null;
+          receipt_storage_path?: string | null;
+          payment_method?: "cash" | "upi" | "bank_transfer" | "card" | "other" | null;
+          incurred_by: string;
+          submitted_by: string;
+          status?: "draft" | "submitted" | "under_review" | "approved" | "rejected" | "reimbursed";
+          reviewed_by?: string | null;
+          reviewed_at?: string | null;
+          review_reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          event_id?: string | null;
+          budget_id?: string | null;
+          category?: string;
+          description?: string;
+          amount?: number;
+          expense_date?: string;
+          vendor?: string | null;
+          receipt_storage_path?: string | null;
+          payment_method?: "cash" | "upi" | "bank_transfer" | "card" | "other" | null;
+          incurred_by?: string;
+          submitted_by?: string;
+          status?: "draft" | "submitted" | "under_review" | "approved" | "rejected" | "reimbursed";
+          reviewed_by?: string | null;
+          reviewed_at?: string | null;
+          review_reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "expenses_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "expenses_budget_id_fkey";
+            columns: ["budget_id"];
+            isOneToOne: false;
+            referencedRelation: "event_budgets";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "expenses_incurred_by_fkey";
+            columns: ["incurred_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "expenses_submitted_by_fkey";
+            columns: ["submitted_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "expenses_reviewed_by_fkey";
+            columns: ["reviewed_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      social_posts: {
+        Row: {
+          id: string;
+          title: string;
+          caption: string | null;
+          platform: string[];
+          campaign: string | null;
+          event_id: string | null;
+          asset_paths: string[];
+          status: "draft" | "in_review" | "approved" | "published";
+          scheduled_for: string | null;
+          published_url: string | null;
+          published_at: string | null;
+          created_by: string;
+          reviewed_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          caption?: string | null;
+          platform?: string[];
+          campaign?: string | null;
+          event_id?: string | null;
+          asset_paths?: string[];
+          status?: "draft" | "in_review" | "approved" | "published";
+          scheduled_for?: string | null;
+          published_url?: string | null;
+          published_at?: string | null;
+          created_by: string;
+          reviewed_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          caption?: string | null;
+          platform?: string[];
+          campaign?: string | null;
+          event_id?: string | null;
+          asset_paths?: string[];
+          status?: "draft" | "in_review" | "approved" | "published";
+          scheduled_for?: string | null;
+          published_url?: string | null;
+          published_at?: string | null;
+          created_by?: string;
+          reviewed_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "social_posts_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "social_posts_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "social_posts_reviewed_by_fkey";
+            columns: ["reviewed_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      creative_assets: {
+        Row: {
+          id: string;
+          title: string;
+          asset_type: "poster" | "banner" | "thumbnail" | "certificate_design" | "social_graphic" | "other";
+          storage_path: string;
+          event_id: string | null;
+          status: "draft" | "in_review" | "approved" | "rejected";
+          reviewed_by: string | null;
+          created_by: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          asset_type: "poster" | "banner" | "thumbnail" | "certificate_design" | "social_graphic" | "other";
+          storage_path: string;
+          event_id?: string | null;
+          status?: "draft" | "in_review" | "approved" | "rejected";
+          reviewed_by?: string | null;
+          created_by: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          asset_type?: "poster" | "banner" | "thumbnail" | "certificate_design" | "social_graphic" | "other";
+          storage_path?: string;
+          event_id?: string | null;
+          status?: "draft" | "in_review" | "approved" | "rejected";
+          reviewed_by?: string | null;
+          created_by?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "creative_assets_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "creative_assets_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "creative_assets_reviewed_by_fkey";
+            columns: ["reviewed_by"];
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];

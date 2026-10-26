@@ -3,7 +3,7 @@ import { requireAdmin } from "@/lib/auth";
 import { IssueForm } from "./issue-form";
 
 export default async function IssueCertificatesPage() {
-  await requireAdmin("core_team");
+  await requireAdmin("operations");
   const supabase = await createServerSupabaseClient();
 
   const { data: templates } = await supabase

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 
 export default async function CertificatesPage() {
-  await requireAdmin("core_team");
+  await requireAdmin("operations");
   const supabase = await createServerSupabaseClient();
 
   const [templatesRes, batchesRes, certsRes] = await Promise.all([

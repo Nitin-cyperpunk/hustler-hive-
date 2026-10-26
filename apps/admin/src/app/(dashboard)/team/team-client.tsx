@@ -91,7 +91,11 @@ interface Invitation {
 
 const ROLE_META: Record<string, { label: string; icon: typeof Shield; color: string }> = {
   super_admin: { label: "Super Admin", icon: ShieldCheck, color: "text-amber-400" },
-  core_team: { label: "Core Team", icon: Shield, color: "text-brand-cyan" },
+  admin: { label: "Admin", icon: Shield, color: "text-brand-cyan" },
+  operations: { label: "Operations", icon: Users, color: "text-blue-400" },
+  social_media: { label: "Social Media", icon: Users, color: "text-pink-400" },
+  creative: { label: "Creative", icon: Users, color: "text-purple-400" },
+  logistics: { label: "Logistics", icon: Users, color: "text-orange-400" },
   volunteer: { label: "Volunteer", icon: Users, color: "text-green-400" },
   member: { label: "Member", icon: User, color: "text-brand-muted" },
 };
@@ -270,7 +274,11 @@ export function TeamClient({
               <SelectContent>
                 <SelectItem value="all">All roles</SelectItem>
                 <SelectItem value="super_admin">Super Admin</SelectItem>
-                <SelectItem value="core_team">Core Team</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="operations">Operations</SelectItem>
+                <SelectItem value="social_media">Social Media</SelectItem>
+                <SelectItem value="creative">Creative</SelectItem>
+                <SelectItem value="logistics">Logistics</SelectItem>
                 <SelectItem value="volunteer">Volunteer</SelectItem>
                 <SelectItem value="member">Member</SelectItem>
               </SelectContent>
@@ -472,7 +480,11 @@ export function TeamClient({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="core_team">Core Team</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="operations">Operations</SelectItem>
+                  <SelectItem value="social_media">Social Media</SelectItem>
+                  <SelectItem value="creative">Creative</SelectItem>
+                  <SelectItem value="logistics">Logistics</SelectItem>
                   <SelectItem value="volunteer">Volunteer</SelectItem>
                   <SelectItem value="member">Member</SelectItem>
                 </SelectContent>
@@ -510,7 +522,11 @@ export function TeamClient({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="core_team">Core Team</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="operations">Operations</SelectItem>
+                  <SelectItem value="social_media">Social Media</SelectItem>
+                  <SelectItem value="creative">Creative</SelectItem>
+                  <SelectItem value="logistics">Logistics</SelectItem>
                   <SelectItem value="volunteer">Volunteer</SelectItem>
                   <SelectItem value="member">Member</SelectItem>
                 </SelectContent>

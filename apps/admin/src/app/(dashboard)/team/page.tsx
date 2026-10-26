@@ -8,7 +8,7 @@ export default async function TeamPage() {
 
   const { data: members } = await supabase
     .from("admin_users")
-    .select("user_id, role, status, created_at, updated_at")
+    .select("user_id, role, status, department, created_at, updated_at")
     .order("created_at", { ascending: true });
 
   const userIds = (members ?? []).map((m) => m.user_id);

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table";
 
 export default async function TemplatesPage() {
-  await requireAdmin("core_team");
+  await requireAdmin("operations");
   const supabase = await createServerSupabaseClient();
 
   const { data: templates } = await supabase

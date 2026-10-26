@@ -8,7 +8,7 @@ export default async function BatchPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const session = await requireAdmin("core_team");
+  const session = await requireAdmin("operations");
   const { id } = await params;
   const supabase = await createServerSupabaseClient();
 
